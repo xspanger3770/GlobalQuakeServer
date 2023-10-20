@@ -94,6 +94,7 @@ public class DatabaseMonitorFrame extends GQFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Seedlink Networks", new SeedlinkServersPanel(this, restoreDatabaseAction));
         tabbedPane.addTab("FDSNWS", new FDSNWSPanel(this, restoreDatabaseAction));
+        tabbedPane.addTab("Server Status", new ServerStatusPanel(this));
         return tabbedPane;
     }
 

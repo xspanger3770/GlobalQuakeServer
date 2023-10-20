@@ -1,5 +1,6 @@
 package gqserver.main;
 
+import gqserver.core.GlobalQuakeServer;
 import gqserver.database.StationDatabaseManager;
 import gqserver.database.StationSource;
 import gqserver.exception.ApplicationErrorHandler;
@@ -33,6 +34,7 @@ public class Main {
     private static void startDatabaseManager() throws FatalIOException {
         databaseManager = new StationDatabaseManager();
         databaseManager.load();
+        new GlobalQuakeServer(databaseManager);
         databaseMonitorFrame = new DatabaseMonitorFrame(databaseManager);
         databaseMonitorFrame.setVisible(true);
     }
