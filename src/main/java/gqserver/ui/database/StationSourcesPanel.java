@@ -93,6 +93,5 @@ public class StationSourcesPanel extends JPanel {
         updateStationSourceAction.setEnabled(count >= 1 && !databaseMonitorFrame.getManager().isUpdating());
         addStationSourceAction.setEnabled(!databaseMonitorFrame.getManager().isUpdating());
         databaseMonitorFrame.getBtnSelectStations().setEnabled(!databaseMonitorFrame.getManager().isUpdating());
-        databaseMonitorFrame.getBtnLaunch().setEnabled(!databaseMonitorFrame.getManager().isUpdating());
     }
 }

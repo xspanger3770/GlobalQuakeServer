@@ -95,6 +95,5 @@ public class SeedlinkServersPanel extends JPanel {
         updateSeedlinkNetworkAction.setEnabled(count >= 1 && !databaseMonitorFrame.getManager().isUpdating());
         addSeedlinkNetworkAction.setEnabled(!databaseMonitorFrame.getManager().isUpdating());
         databaseMonitorFrame.getBtnSelectStations().setEnabled(!databaseMonitorFrame.getManager().isUpdating());
-        databaseMonitorFrame.getBtnLaunch().setEnabled(!databaseMonitorFrame.getManager().isUpdating());
     }
 }

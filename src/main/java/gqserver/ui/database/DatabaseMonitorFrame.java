@@ -20,10 +20,8 @@ import java.util.TimerTask;
 public class DatabaseMonitorFrame extends GQFrame {
 
     private final StationDatabaseManager manager;
-    private final Runnable onLaunch;
     private JProgressBar mainProgressBar;
     private JButton btnSelectStations;
-    private JButton btnLaunch;
 
     private final AbstractAction restoreDatabaseAction;
     private JComponent buttonsOutsidePanel;
@@ -32,9 +30,8 @@ public class DatabaseMonitorFrame extends GQFrame {
         return mainProgressBar;
     }
 
-    public DatabaseMonitorFrame(StationDatabaseManager manager, Runnable onLauch) {
+    public DatabaseMonitorFrame(StationDatabaseManager manager) {
         this.manager = manager;
-        this.onLaunch = onLauch;
 
         this.restoreDatabaseAction = new RestoreDatabaseAction(this, manager);
         restoreDatabaseAction.setEnabled(false);
@@ -131,21 +128,6 @@ public class DatabaseMonitorFrame extends GQFrame {
 
         buttonsPanel.add(btnSelectStations);
 
-        btnLaunch = new JButton("Launch %s".formatted(Main.fullName));
-        btnLaunch.setEnabled(false);
-
-        ImageIcon launchIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/image_icons/launchGlobalQuake.png")));
-        image = launchIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-        btnLaunch.setIcon(new ImageIcon(image));
-        btnLaunch.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                DatabaseMonitorFrame.this.dispose();
-                onLaunch.run();
-            }
-        });
-        buttonsPanel.add(btnLaunch);
-
         bottomPanel.add(new StationCountPanel(this, new GridLayout(2, 2)));
 
         mainProgressBar  = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
@@ -176,7 +158,4 @@ public class DatabaseMonitorFrame extends GQFrame {
         return btnSelectStations;  
     }
 
-    public JButton getBtnLaunch() {
-        return btnLaunch;
-    }
 }

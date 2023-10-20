@@ -36,7 +36,7 @@ public class Main {
     private static void startDatabaseManager() throws FatalIOException {
         databaseManager = new StationDatabaseManager();
         databaseManager.load();
-        databaseMonitorFrame = new DatabaseMonitorFrame(databaseManager, Main::launchGlobalQuake);
+        databaseMonitorFrame = new DatabaseMonitorFrame(databaseManager);
         databaseMonitorFrame.setVisible(true);
     }
 
@@ -122,10 +122,6 @@ public class Main {
                         databaseMonitorFrame.getMainProgressBar().setValue((int) ((phase++ / PHASES) * 100.0));
                     });
                 });
-    }
-
-    public static void launchGlobalQuake() {
-        new GlobalQuake(databaseManager).createFrame().runSeedlinkReader().startRuntime();
     }
 
     public static ApplicationErrorHandler getErrorHandler() {
