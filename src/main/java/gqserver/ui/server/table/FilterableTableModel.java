@@ -1,4 +1,4 @@
-package gqserver.ui.database.table;
+package gqserver.ui.server.table;
 
 import java.io.Serial;
 import java.util.ArrayList;

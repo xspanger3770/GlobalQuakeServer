@@ -1,29 +1,29 @@
-package gqserver.ui.database.action.seedlink;
+package gqserver.ui.server.action.source;
 
-import gqserver.database.SeedlinkNetwork;
 import gqserver.database.StationDatabaseManager;
-import gqserver.ui.database.EditSeedlinkNetworkDialog;
-import gqserver.ui.database.table.FilterableTableModel;
+import gqserver.database.StationSource;
+import gqserver.ui.server.EditStationSourceDialog;
+import gqserver.ui.server.table.FilterableTableModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Objects;
 
-public class EditSeedlinkNetworkAction extends AbstractAction {
+public class EditStationSourceAction extends AbstractAction {
 
     private final StationDatabaseManager databaseManager;
     private final Window parent;
-    private FilterableTableModel<SeedlinkNetwork> tableModel;
+    private FilterableTableModel<StationSource> tableModel;
 
     private JTable table;
 
-    public EditSeedlinkNetworkAction(Window parent, StationDatabaseManager databaseManager){
+    public EditStationSourceAction(Window parent, StationDatabaseManager databaseManager){
         super("Edit");
         this.databaseManager = databaseManager;
         this.parent = parent;
 
-        putValue(SHORT_DESCRIPTION, "Edit Seedlink Network");
+        putValue(SHORT_DESCRIPTION, "Edit Station Source");
 
         ImageIcon editIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/image_icons/edit.png")));
         Image image = editIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
@@ -41,11 +41,11 @@ public class EditSeedlinkNetworkAction extends AbstractAction {
             table.getCellEditor().cancelCellEditing();
         }
         int modelRow = table.convertRowIndexToModel(selectedRows[0]);
-        SeedlinkNetwork seedlinkNetwork = tableModel.getEntity(modelRow);
-        new EditSeedlinkNetworkDialog(parent, databaseManager, seedlinkNetwork);
+        StationSource stationSource = tableModel.getEntity(modelRow);
+        new EditStationSourceDialog(parent, databaseManager, stationSource);
     }
 
-    public void setTableModel(FilterableTableModel<SeedlinkNetwork> tableModel) {
+    public void setTableModel(FilterableTableModel<StationSource> tableModel) {
         this.tableModel = tableModel;
     }
 

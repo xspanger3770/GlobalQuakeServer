@@ -1,8 +1,8 @@
 package gqserver.ui.stationselect;
 
 import gqserver.ui.GQFrame;
-import gqserver.ui.database.DatabaseMonitorFrame;
-import gqserver.ui.database.StationCountPanel;
+import gqserver.ui.server.DatabaseMonitorFrame;
+import gqserver.ui.server.StationCountPanel;
 import gqserver.ui.stationselect.action.DeselectAllAction;
 import gqserver.ui.stationselect.action.DeselectUnavailableAction;
 import gqserver.ui.stationselect.action.DistanceFilterAction;

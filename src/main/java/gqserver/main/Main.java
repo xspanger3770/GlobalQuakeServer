@@ -1,6 +1,5 @@
 package gqserver.main;
 
-import gqserver.core.GlobalQuake;
 import gqserver.database.StationDatabaseManager;
 import gqserver.database.StationSource;
 import gqserver.exception.ApplicationErrorHandler;
@@ -12,7 +11,7 @@ import gqserver.intensity.ShakeMap;
 import gqserver.regions.Regions;
 import gqserver.sounds.Sounds;
 import gqserver.training.EarthquakeAnalysisTraining;
-import gqserver.ui.database.DatabaseMonitorFrame;
+import gqserver.ui.server.DatabaseMonitorFrame;
 import gqserver.ui.settings.Settings;
 import gqserver.utils.Scale;
 

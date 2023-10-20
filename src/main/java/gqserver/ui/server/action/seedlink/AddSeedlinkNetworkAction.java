@@ -1,7 +1,7 @@
-package gqserver.ui.database.action.seedlink;
+package gqserver.ui.server.action.seedlink;
 
 import gqserver.database.StationDatabaseManager;
-import gqserver.ui.database.EditSeedlinkNetworkDialog;
+import gqserver.ui.server.EditSeedlinkNetworkDialog;
 
 import javax.swing.*;
 import java.awt.*;

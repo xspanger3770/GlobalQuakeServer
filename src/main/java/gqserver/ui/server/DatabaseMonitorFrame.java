@@ -1,10 +1,10 @@
-package gqserver.ui.database;
+package gqserver.ui.server;
 
 import gqserver.database.StationDatabaseManager;
 import gqserver.exception.FatalIOException;
 import gqserver.main.Main;
 import gqserver.ui.GQFrame;
-import gqserver.ui.database.action.RestoreDatabaseAction;
+import gqserver.ui.server.action.RestoreDatabaseAction;
 import gqserver.ui.stationselect.StationSelectFrame;
 
 import javax.swing.*;
@@ -92,8 +92,8 @@ public class DatabaseMonitorFrame extends GQFrame {
 
     private Component createTabbedPane() {
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Seedlink Networks", new SeedlinkServersPanel(this,restoreDatabaseAction));
-        tabbedPane.addTab("Station Sources", new StationSourcesPanel(this,restoreDatabaseAction));
+        tabbedPane.addTab("Seedlink Networks", new SeedlinkServersPanel(this, restoreDatabaseAction));
+        tabbedPane.addTab("FDSNWS", new FDSNWSPanel(this, restoreDatabaseAction));
         return tabbedPane;
     }
 

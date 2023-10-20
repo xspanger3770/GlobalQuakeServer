@@ -1,16 +1,16 @@
-package gqserver.ui.database;
+package gqserver.ui.server;
 
-import gqserver.ui.database.action.source.AddStationSourceAction;
-import gqserver.ui.database.action.source.EditStationSourceAction;
-import gqserver.ui.database.action.source.RemoveStationSourceAction;
-import gqserver.ui.database.action.source.UpdateStationSourceAction;
-import gqserver.ui.database.table.StationSourcesTableModel;
+import gqserver.ui.server.action.source.AddStationSourceAction;
+import gqserver.ui.server.action.source.EditStationSourceAction;
+import gqserver.ui.server.action.source.RemoveStationSourceAction;
+import gqserver.ui.server.action.source.UpdateStationSourceAction;
+import gqserver.ui.server.table.StationSourcesTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 
-public class StationSourcesPanel extends JPanel {
+public class FDSNWSPanel extends JPanel {
     private final DatabaseMonitorFrame databaseMonitorFrame;
 
     private final AddStationSourceAction addStationSourceAction;
@@ -20,7 +20,7 @@ public class StationSourcesPanel extends JPanel {
     private final JTable table;
     private StationSourcesTableModel tableModel;
 
-    public StationSourcesPanel(DatabaseMonitorFrame databaseMonitorFrame, AbstractAction restoreDatabaseAction) {
+    public FDSNWSPanel(DatabaseMonitorFrame databaseMonitorFrame, AbstractAction restoreDatabaseAction) {
         this.databaseMonitorFrame = databaseMonitorFrame;
         this.addStationSourceAction = new AddStationSourceAction(databaseMonitorFrame, databaseMonitorFrame.getManager());
         this.editStationSourceAction = new EditStationSourceAction(databaseMonitorFrame, databaseMonitorFrame.getManager());

@@ -1,4 +1,4 @@
-package gqserver.ui.database;
+package gqserver.ui.server;
 
 import gqserver.database.StationDatabaseManager;
 import gqserver.database.StationSource;

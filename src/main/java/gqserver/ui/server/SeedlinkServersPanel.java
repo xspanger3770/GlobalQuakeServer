@@ -1,10 +1,10 @@
-package gqserver.ui.database;
+package gqserver.ui.server;
 
-import gqserver.ui.database.action.seedlink.AddSeedlinkNetworkAction;
-import gqserver.ui.database.action.seedlink.EditSeedlinkNetworkAction;
-import gqserver.ui.database.action.seedlink.RemoveSeedlinkNetworkAction;
-import gqserver.ui.database.action.seedlink.UpdateSeedlinkNetworkAction;
-import gqserver.ui.database.table.SeedlinkNetworksTableModel;
+import gqserver.ui.server.action.seedlink.AddSeedlinkNetworkAction;
+import gqserver.ui.server.action.seedlink.EditSeedlinkNetworkAction;
+import gqserver.ui.server.action.seedlink.RemoveSeedlinkNetworkAction;
+import gqserver.ui.server.action.seedlink.UpdateSeedlinkNetworkAction;
+import gqserver.ui.server.table.SeedlinkNetworksTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

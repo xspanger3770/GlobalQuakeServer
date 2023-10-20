@@ -1,9 +1,9 @@
-package gqserver.ui.database.action.seedlink;
+package gqserver.ui.server.action.seedlink;
 
 import gqserver.database.SeedlinkNetwork;
 import gqserver.database.StationDatabaseManager;
 import gqserver.exception.RuntimeApplicationException;
-import gqserver.ui.database.table.FilterableTableModel;
+import gqserver.ui.server.table.FilterableTableModel;
 
 import javax.swing.*;
 

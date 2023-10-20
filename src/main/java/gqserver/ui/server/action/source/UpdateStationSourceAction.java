@@ -1,9 +1,9 @@
-package gqserver.ui.database.action.source;
+package gqserver.ui.server.action.source;
 
 import gqserver.database.StationDatabaseManager;
 import gqserver.database.StationSource;
 import gqserver.exception.RuntimeApplicationException;
-import gqserver.ui.database.table.FilterableTableModel;
+import gqserver.ui.server.table.FilterableTableModel;
 
 import javax.swing.*;
 

@@ -1,7 +1,7 @@
-package gqserver.ui.database.action.source;
+package gqserver.ui.server.action.source;
 
 import gqserver.database.StationDatabaseManager;
-import gqserver.ui.database.EditStationSourceDialog;
+import gqserver.ui.server.EditStationSourceDialog;
 
 import javax.swing.*;
 import java.awt.*;
