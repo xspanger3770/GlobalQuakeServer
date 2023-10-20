@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 public class Main {
 
     private static ApplicationErrorHandler errorHandler;
-    public static final String version = "0.9.9_pre5";
-    public static final String fullName = "GlobalQuake " + version;
-    public static final File MAIN_FOLDER = new File("./GlobalQuake/");
+    public static final String version = "0.1.0";
+    public static final String fullName = "GlobalQuakeServer " + version;
+    public static final File MAIN_FOLDER = new File("./GlobalQuakeServer/");
     private static DatabaseMonitorFrame databaseMonitorFrame;
     private static StationDatabaseManager databaseManager;
 

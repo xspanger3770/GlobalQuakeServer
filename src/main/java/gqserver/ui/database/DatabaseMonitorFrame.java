@@ -51,7 +51,7 @@ public class DatabaseMonitorFrame extends GQFrame {
         contentPane.add(createBottomPanel(), BorderLayout.SOUTH);
 
         pack();
-        setTitle("Station Database Manager");
+        setTitle(Main.fullName);
         setLocationRelativeTo(null);
 
         runTimer();
