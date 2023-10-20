@@ -9,7 +9,6 @@ import gqserver.events.specific.ClusterCreateEvent;
 import gqserver.geo.GeoUtils;
 import gqserver.geo.taup.TauPTravelTimeCalculator;
 import gqserver.intensity.IntensityTable;
-import gqserver.sounds.Sounds;
 import gqserver.ui.settings.Settings;
 import org.tinylog.Logger;
 
@@ -484,8 +483,6 @@ public class ClusterAnalysis {
             } else {
                 cluster.tick();
             }
-
-            Sounds.determineSounds(cluster);
         }
 
         clusters.removeAll(toBeRemoved);

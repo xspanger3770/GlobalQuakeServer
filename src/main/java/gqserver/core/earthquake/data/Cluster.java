@@ -4,7 +4,6 @@ import gqserver.core.alert.Warnable;
 import gqserver.core.analysis.Event;
 import gqserver.core.station.AbstractStation;
 import gqserver.geo.GeoUtils;
-import gqserver.sounds.SoundsInfo;
 import gqserver.training.EarthquakeAnalysisTraining;
 
 import java.awt.*;
@@ -32,7 +31,6 @@ public class Cluster implements Warnable {
 
 	public int lastEpicenterUpdate;
 
-	public final SoundsInfo soundsInfo;
 	private double anchorLon;
 	private double anchorLat;
 	public int revisionID;
@@ -62,7 +60,6 @@ public class Cluster implements Warnable {
 		this.rootLat = NONE;
 		this.rootLon = NONE;
 		this.lastUpdate = System.currentTimeMillis();
-		this.soundsInfo = new SoundsInfo();
 	}
 
 	public Hypocenter getPreviousHypocenter() {

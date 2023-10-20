@@ -9,11 +9,9 @@ import gqserver.geo.taup.TauPTravelTimeCalculator;
 import gqserver.intensity.IntensityTable;
 import gqserver.intensity.ShakeMap;
 import gqserver.regions.Regions;
-import gqserver.sounds.Sounds;
 import gqserver.training.EarthquakeAnalysisTraining;
 import gqserver.ui.server.DatabaseMonitorFrame;
 import gqserver.ui.settings.Settings;
-import gqserver.utils.Scale;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,28 +64,16 @@ public class Main {
         }
     }
 
-    private static final double PHASES = 9.0;
+    private static final double PHASES = 7.0;
     private static int phase = 0;
 
     private static void initAll() throws Exception {
         databaseMonitorFrame.getMainProgressBar().setString("Loading regions...");
         databaseMonitorFrame.getMainProgressBar().setValue((int) ((phase++ / PHASES) * 100.0));
         Regions.init();
-        databaseMonitorFrame.getMainProgressBar().setString("Loading scales...");
-        databaseMonitorFrame.getMainProgressBar().setValue((int) ((phase++ / PHASES) * 100.0));
-        Scale.load();
         databaseMonitorFrame.getMainProgressBar().setString("Loading shakemap...");
         databaseMonitorFrame.getMainProgressBar().setValue((int) ((phase++ / PHASES) * 100.0));
         ShakeMap.init();
-        databaseMonitorFrame.getMainProgressBar().setString("Loading sounds...");
-        databaseMonitorFrame.getMainProgressBar().setValue((int) ((phase++ / PHASES) * 100.0));
-        try{
-            //Sound may fail to load for a variety of reasons. If it does, this method disables sound.
-            Sounds.load();
-        } catch (Exception e){
-            RuntimeApplicationException error = new RuntimeApplicationException("Failed to load sounds. Sound will be disabled", e);
-            getErrorHandler().handleWarning(error);
-        }
         databaseMonitorFrame.getMainProgressBar().setString("Filling up intensity table...");
         databaseMonitorFrame.getMainProgressBar().setValue((int) ((phase++ / PHASES) * 100.0));
         IntensityTable.init();

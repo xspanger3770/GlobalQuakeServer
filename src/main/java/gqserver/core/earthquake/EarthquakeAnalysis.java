@@ -14,7 +14,6 @@ import gqserver.events.specific.QuakeUpdateEvent;
 import gqserver.geo.GeoUtils;
 import gqserver.geo.taup.TauPTravelTimeCalculator;
 import gqserver.intensity.IntensityTable;
-import gqserver.sounds.Sounds;
 import gqserver.ui.globe.Point2D;
 import gqserver.ui.settings.Settings;
 import gqserver.utils.monitorable.MonitorableCopyOnWriteArrayList;
@@ -853,8 +852,6 @@ public class EarthquakeAnalysis {
 
         if (cluster.getEarthquake() == null) {
             if (!testing) {
-                Sounds.playSound(Sounds.found);
-
                 if (GlobalQuakeServer.instance != null) {
                     GlobalQuakeServer.instance.getEventHandler().fireEvent(new QuakeCreateEvent(newEarthquake));
                 }
@@ -863,7 +860,6 @@ public class EarthquakeAnalysis {
             }
             cluster.setEarthquake(newEarthquake);
         } else {
-            Sounds.playSound(Sounds.update);
             cluster.getEarthquake().update(newEarthquake);
 
             if (GlobalQuakeServer.instance != null) {
