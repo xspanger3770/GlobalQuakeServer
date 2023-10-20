@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import gqserver.core.GlobalQuake;
+import gqserver.core.GlobalQuakeServer;
 import gqserver.core.earthquake.data.Earthquake;
 import gqserver.core.earthquake.EarthquakeAnalysis;
 import gqserver.core.station.AbstractStation;
@@ -268,8 +268,8 @@ public class StationMonitorPanel extends JPanel {
 			g.draw(new Line2D.Double(x, 0, x, getHeight()));
 		}
 
-		if(GlobalQuake.instance != null) {
-			for (Earthquake earthquake : GlobalQuake.instance.getEarthquakeAnalysis().getEarthquakes()) {
+		if(GlobalQuakeServer.instance != null) {
+			for (Earthquake earthquake : GlobalQuakeServer.instance.getEarthquakeAnalysis().getEarthquakes()) {
 				double distGC = GeoUtils.greatCircleDistance(station.getLatitude(), station.getLongitude(), earthquake.getLat(), earthquake.getLon());
 				long arrivalP = (long) (earthquake.getOrigin() + 1000 * (TauPTravelTimeCalculator.getPWaveTravelTime(earthquake.getDepth(),
 						TauPTravelTimeCalculator.toAngle(distGC)) + EarthquakeAnalysis.getElevationCorrection(station.getAlt())));

@@ -1,6 +1,6 @@
 package gqserver.core.earthquake;
 
-import gqserver.core.GlobalQuake;
+import gqserver.core.GlobalQuakeServer;
 import gqserver.core.analysis.Event;
 import gqserver.core.earthquake.data.*;
 import gqserver.core.station.AbstractStation;
@@ -45,7 +45,7 @@ public class ClusterAnalysis {
     }
 
     public ClusterAnalysis() {
-        this(GlobalQuake.instance.getEarthquakeAnalysis().getEarthquakes(), GlobalQuake.instance.getStationManager().getStations());
+        this(GlobalQuakeServer.instance.getEarthquakeAnalysis().getEarthquakes(), GlobalQuakeServer.instance.getStationManager().getStations());
     }
 
     public Lock getClustersReadLock() {
@@ -506,8 +506,8 @@ public class ClusterAnalysis {
                 + cluster.getAssignedEvents().size() + " events");
         clusters.add(cluster);
 
-        if(GlobalQuake.instance != null){
-            GlobalQuake.instance.getEventHandler().fireEvent(new ClusterCreateEvent(cluster));
+        if(GlobalQuakeServer.instance != null){
+            GlobalQuakeServer.instance.getEventHandler().fireEvent(new ClusterCreateEvent(cluster));
         }
 
         return cluster;

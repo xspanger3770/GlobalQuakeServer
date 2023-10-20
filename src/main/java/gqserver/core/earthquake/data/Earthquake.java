@@ -1,6 +1,6 @@
 package gqserver.core.earthquake.data;
 
-import gqserver.core.GlobalQuake;
+import gqserver.core.GlobalQuakeServer;
 import gqserver.core.alert.Warnable;
 import gqserver.events.specific.ShakeMapCreatedEvent;
 import gqserver.intensity.ShakeMap;
@@ -166,8 +166,8 @@ public class Earthquake implements Regional, Warnable {
 		shakemapExecutor.submit(() -> {
             double mag = hypocenter.magnitude;
             shakemap = new ShakeMap(hypocenter, mag < 5.2 ? 6 : mag < 6.4 ? 5 : mag < 8.5 ? 4 : 3);
-            if(GlobalQuake.instance != null) {
-                GlobalQuake.instance.getEventHandler().fireEvent(new ShakeMapCreatedEvent(Earthquake.this));
+            if(GlobalQuakeServer.instance != null) {
+                GlobalQuakeServer.instance.getEventHandler().fireEvent(new ShakeMapCreatedEvent(Earthquake.this));
             }
         });
 	}

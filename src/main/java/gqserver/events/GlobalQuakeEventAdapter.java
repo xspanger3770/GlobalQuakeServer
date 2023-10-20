@@ -36,8 +36,4 @@ public class GlobalQuakeEventAdapter implements GlobalQuakeEventListener{
 
     }
 
-    @Override
-    public void onCinemaModeTargetSwitch(CinemaEvent cinemaEvent) {
-
-    }
 }

@@ -31,7 +31,7 @@ public class GlobalQuakeRuntime {
         execAnalysis.scheduleAtFixedRate(() -> {
             try {
                 long a = System.currentTimeMillis();
-                GlobalQuake.instance.getStationManager().getStations().parallelStream().forEach(AbstractStation::analyse);
+                GlobalQuakeServer.instance.getStationManager().getStations().parallelStream().forEach(AbstractStation::analyse);
                 lastAnalysis = System.currentTimeMillis() - a;
             } catch (Exception e) {
                 Logger.error("Exception occurred in station analysis");
@@ -42,9 +42,9 @@ public class GlobalQuakeRuntime {
         exec1Sec.scheduleAtFixedRate(() -> {
             try {
                 long a = System.currentTimeMillis();
-                GlobalQuake.instance.getStationManager().getStations().parallelStream().forEach(station -> station.second(a));
-                if (GlobalQuake.instance.getEarthquakeAnalysis() != null) {
-                    GlobalQuake.instance.getEarthquakeAnalysis().second();
+                GlobalQuakeServer.instance.getStationManager().getStations().parallelStream().forEach(station -> station.second(a));
+                if (GlobalQuakeServer.instance.getEarthquakeAnalysis() != null) {
+                    GlobalQuakeServer.instance.getEarthquakeAnalysis().second();
                 }
                 lastSecond = System.currentTimeMillis() - a;
             } catch (Exception e) {
@@ -56,8 +56,8 @@ public class GlobalQuakeRuntime {
         execClusters.scheduleAtFixedRate(() -> {
             try {
                 long a = System.currentTimeMillis();
-                GlobalQuake.instance.getClusterAnalysis().run();
-                GlobalQuake.instance.getAlertManager().tick();
+                GlobalQuakeServer.instance.getClusterAnalysis().run();
+                GlobalQuakeServer.instance.getAlertManager().tick();
                 clusterAnalysisT = System.currentTimeMillis() - a;
             } catch (Exception e) {
                 Logger.error("Exception occured in cluster analysis loop");
@@ -68,7 +68,7 @@ public class GlobalQuakeRuntime {
         execQuake.scheduleAtFixedRate(() -> {
             try {
                 long a = System.currentTimeMillis();
-                GlobalQuake.instance.getEarthquakeAnalysis().run();
+                GlobalQuakeServer.instance.getEarthquakeAnalysis().run();
                 lastQuakesT = System.currentTimeMillis() - a;
             } catch (Exception e) {
                 Logger.error("Exception occured in hypocenter location loop");

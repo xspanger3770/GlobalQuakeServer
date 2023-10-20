@@ -1,6 +1,6 @@
 package gqserver.core.earthquake;
 
-import gqserver.core.GlobalQuake;
+import gqserver.core.GlobalQuakeServer;
 import gqserver.core.analysis.BetterAnalysis;
 import gqserver.core.analysis.Event;
 import gqserver.core.earthquake.data.*;
@@ -57,10 +57,10 @@ public class EarthquakeAnalysis {
 
     public void run() {
         if (clusterAnalysis == null) {
-            if (GlobalQuake.instance == null) {
+            if (GlobalQuakeServer.instance == null) {
                 return;
             } else {
-                clusterAnalysis = GlobalQuake.instance.getClusterAnalysis();
+                clusterAnalysis = GlobalQuakeServer.instance.getClusterAnalysis();
             }
         }
         clusterAnalysis.getClustersReadLock().lock();
@@ -458,8 +458,8 @@ public class EarthquakeAnalysis {
             boolean remove = pct < finderSettings.correctnessThreshold() * 0.75 || bestHypocenter.correctEvents < finderSettings.minStations() * 0.75 || obviousCorrectPct < OBVIOUS_CORRECT_THRESHOLD * 0.75;
             if (remove && cluster.getEarthquake() != null) {
                 getEarthquakes().remove(cluster.getEarthquake());
-                if(GlobalQuake.instance != null){
-                    GlobalQuake.instance.getEventHandler().fireEvent(new QuakeRemoveEvent(cluster.getEarthquake()));
+                if(GlobalQuakeServer.instance != null){
+                    GlobalQuakeServer.instance.getEventHandler().fireEvent(new QuakeRemoveEvent(cluster.getEarthquake()));
                 }
                 cluster.setEarthquake(null);
             }
@@ -548,7 +548,7 @@ public class EarthquakeAnalysis {
     }
 
     private void calculateObviousArrivals(Hypocenter bestHypocenter) {
-        if (GlobalQuake.instance == null) {
+        if (GlobalQuakeServer.instance == null) {
             bestHypocenter.obviousArrivalsInfo = new ObviousArrivalsInfo(0, 0);
             return;
         }
@@ -556,7 +556,7 @@ public class EarthquakeAnalysis {
         int total = 0;
         int wrong = 0;
 
-        for (AbstractStation station : GlobalQuake.instance.getStationManager().getStations()) {
+        for (AbstractStation station : GlobalQuakeServer.instance.getStationManager().getStations()) {
             double distGC = GeoUtils.greatCircleDistance(bestHypocenter.lat, bestHypocenter.lon, station.getLatitude(), station.getLongitude());
             double angle = TauPTravelTimeCalculator.toAngle(distGC);
 
@@ -855,8 +855,8 @@ public class EarthquakeAnalysis {
             if (!testing) {
                 Sounds.playSound(Sounds.found);
 
-                if (GlobalQuake.instance != null) {
-                    GlobalQuake.instance.getEventHandler().fireEvent(new QuakeCreateEvent(newEarthquake));
+                if (GlobalQuakeServer.instance != null) {
+                    GlobalQuakeServer.instance.getEventHandler().fireEvent(new QuakeCreateEvent(newEarthquake));
                 }
 
                 getEarthquakes().add(newEarthquake);
@@ -866,8 +866,8 @@ public class EarthquakeAnalysis {
             Sounds.playSound(Sounds.update);
             cluster.getEarthquake().update(newEarthquake);
 
-            if (GlobalQuake.instance != null) {
-                GlobalQuake.instance.getEventHandler().fireEvent(new QuakeUpdateEvent(cluster.getEarthquake(), cluster.getPreviousHypocenter()));
+            if (GlobalQuakeServer.instance != null) {
+                GlobalQuakeServer.instance.getEventHandler().fireEvent(new QuakeUpdateEvent(cluster.getEarthquake(), cluster.getPreviousHypocenter()));
             }
         }
 
@@ -965,8 +965,8 @@ public class EarthquakeAnalysis {
                     Math.min(STORE_TABLE.length - 1, (int) (earthquake.getMag() * 2.0)))];
             if (System.currentTimeMillis() - earthquake.getOrigin() > (long) store_minutes * 60 * 1000
                     && System.currentTimeMillis() - earthquake.getLastUpdate() > 0.25 * store_minutes * 60 * 1000) {
-                if (GlobalQuake.instance != null) {
-                    GlobalQuake.instance.getArchive().archiveQuakeAndSave(earthquake);
+                if (GlobalQuakeServer.instance != null) {
+                    GlobalQuakeServer.instance.getArchive().archiveQuakeAndSave(earthquake);
                 }
                 toBeRemoved.add(earthquake);
             }
@@ -974,8 +974,8 @@ public class EarthquakeAnalysis {
 
         earthquakes.removeAll(toBeRemoved);
 
-        if (GlobalQuake.instance != null) {
-            toBeRemoved.forEach(earthquake -> GlobalQuake.instance.getEventHandler().fireEvent(new QuakeRemoveEvent(earthquake)));
+        if (GlobalQuakeServer.instance != null) {
+            toBeRemoved.forEach(earthquake -> GlobalQuakeServer.instance.getEventHandler().fireEvent(new QuakeRemoveEvent(earthquake)));
         }
     }
 

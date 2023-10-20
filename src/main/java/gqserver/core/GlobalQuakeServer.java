@@ -2,25 +2,17 @@ package gqserver.core;
 
 import gqserver.core.alert.AlertManager;
 import gqserver.core.earthquake.ClusterAnalysis;
-import gqserver.core.earthquake.data.Earthquake;
 import gqserver.core.earthquake.EarthquakeAnalysis;
 import gqserver.core.archive.EarthquakeArchive;
 import gqserver.core.station.GlobalStationManager;
 import gqserver.database.StationDatabaseManager;
 import gqserver.events.GlobalQuakeEventHandler;
-import gqserver.main.Main;
-import gqserver.ui.globalquake.GlobalQuakeFrame;
 
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-public class GlobalQuake {
+public class GlobalQuakeServer {
 
 	private final GlobalQuakeRuntime globalQuakeRuntime;
 	private final SeedlinkNetworksReader seedlinkNetworksReader;
 	private final StationDatabaseManager stationDatabaseManager;
-	private GlobalQuakeFrame globalQuakeFrame;
 	private final ClusterAnalysis clusterAnalysis;
 	private final EarthquakeAnalysis earthquakeAnalysis;
 	private final AlertManager alertManager;
@@ -28,11 +20,11 @@ public class GlobalQuake {
 
 	private final GlobalQuakeEventHandler eventHandler;
 
-	public static GlobalQuake instance;
+	public static GlobalQuakeServer instance;
 
 	private final GlobalStationManager globalStationManager;
 
-	public GlobalQuake(StationDatabaseManager stationDatabaseManager) {
+	public GlobalQuakeServer(StationDatabaseManager stationDatabaseManager) {
 		instance = this;
 		this.stationDatabaseManager = stationDatabaseManager;
 
@@ -51,29 +43,8 @@ public class GlobalQuake {
 		seedlinkNetworksReader = new SeedlinkNetworksReader();
 	}
 
-	public GlobalQuake runSeedlinkReader() {
+	public GlobalQuakeServer runSeedlinkReader() {
 		seedlinkNetworksReader.run();
-		return this;
-	}
-
-	public GlobalQuake createFrame() {
-		EventQueue.invokeLater(() -> {
-			globalQuakeFrame = new GlobalQuakeFrame();
-			globalQuakeFrame.setVisible(true);
-
-
-			Main.getErrorHandler().setParent(globalQuakeFrame);
-
-            globalQuakeFrame.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-					for (Earthquake quake : getEarthquakeAnalysis().getEarthquakes()) {
-						getArchive().archiveQuake(quake);
-					}
-                    getArchive().saveArchive();
-                }
-            });
-		});
 		return this;
 	}
 
@@ -117,7 +88,4 @@ public class GlobalQuake {
 		return eventHandler;
 	}
 
-	public GlobalQuakeFrame getGlobalQuakeFrame() {
-		return globalQuakeFrame;
-	}
 }

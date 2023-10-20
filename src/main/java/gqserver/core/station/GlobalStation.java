@@ -1,7 +1,7 @@
 package gqserver.core.station;
 
 import edu.sc.seis.seisFile.mseed.DataRecord;
-import gqserver.core.GlobalQuake;
+import gqserver.core.GlobalQuakeServer;
 import gqserver.database.SeedlinkNetwork;
 
 import java.time.Instant;
@@ -69,7 +69,7 @@ public class GlobalStation extends AbstractStation {
 	private void process(DataRecord record) {
 		nextExpectedLog = record.getPredictedNextStartBtime().toInstant();
 		getAnalysis().analyse(record);
-		GlobalQuake.instance.getSeedlinkReader().logRecord(record.getLastSampleBtime().toInstant().toEpochMilli());
+		GlobalQuakeServer.instance.getSeedlinkReader().logRecord(record.getLastSampleBtime().toInstant().toEpochMilli());
 	}
 
 	@Override

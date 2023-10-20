@@ -45,18 +45,18 @@ public class SeedlinkNetworksReader {
 
 	public void run() {
 		createCache();
-		GlobalQuake.instance.getStationDatabaseManager().getStationDatabase().getDatabaseReadLock().lock();
+		GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getDatabaseReadLock().lock();
 		try{
-			GlobalQuake.instance.getStationDatabaseManager().getStationDatabase().getSeedlinkNetworks().forEach(this::runSeedlinkThread);
+			GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getSeedlinkNetworks().forEach(this::runSeedlinkThread);
 		} finally {
-			GlobalQuake.instance.getStationDatabaseManager().getStationDatabase().getDatabaseReadLock().unlock();
+			GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getDatabaseReadLock().unlock();
 		}
 	}
 
 	private final Map<String, GlobalStation> stationCache = new HashMap<>();
 
 	private void createCache() {
-		for (AbstractStation s : GlobalQuake.instance.getStationManager().getStations()) {
+		for (AbstractStation s : GlobalQuakeServer.instance.getStationManager().getStations()) {
 			if (s instanceof GlobalStation) {
 				stationCache.put("%s %s".formatted(s.getNetworkCode(), s.getStationCode()), (GlobalStation) s);
 			}
@@ -83,7 +83,7 @@ public class SeedlinkNetworksReader {
 						reconnectDelay = RECONNECT_DELAY;
 						boolean first = true;
 
-						for (AbstractStation s : GlobalQuake.instance.getStationManager().getStations()) {
+						for (AbstractStation s : GlobalQuakeServer.instance.getStationManager().getStations()) {
 							if (s.getSeedlinkNetwork() != null && s.getSeedlinkNetwork().equals(seedlinkNetwork)) {
                                 Logger.trace("Connecting to %s %s %s %s [%s]".formatted(s.getStationCode(), s.getNetworkCode(), s.getChannelName(), s.getLocationCode(), seedlinkNetwork.getName()));
 								if(!first) {

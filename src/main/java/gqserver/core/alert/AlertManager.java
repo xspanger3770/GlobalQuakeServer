@@ -2,7 +2,7 @@ package gqserver.core.alert;
 
 import java.util.*;
 
-import gqserver.core.GlobalQuake;
+import gqserver.core.GlobalQuakeServer;
 import gqserver.core.earthquake.data.Earthquake;
 import gqserver.events.GlobalQuakeEventAdapter;
 import gqserver.events.specific.AlertIssuedEvent;
@@ -19,7 +19,7 @@ public class AlertManager {
     public AlertManager() {
         this.warnings = new HashMap<>();
 
-        GlobalQuake.instance.getEventHandler().registerEventListener(new GlobalQuakeEventAdapter(){
+        GlobalQuakeServer.instance.getEventHandler().registerEventListener(new GlobalQuakeEventAdapter(){
             @Override
             public void onQuakeCreate(QuakeCreateEvent event) {
                 tick();
@@ -39,7 +39,7 @@ public class AlertManager {
     }
 
     public synchronized void tick() {
-        GlobalQuake.instance.getEarthquakeAnalysis().getEarthquakes().forEach(earthquake -> warnings.putIfAbsent(earthquake, new Warning()));
+        GlobalQuakeServer.instance.getEarthquakeAnalysis().getEarthquakes().forEach(earthquake -> warnings.putIfAbsent(earthquake, new Warning()));
 
         for (Iterator<Map.Entry<Warnable, Warning>> iterator = warnings.entrySet().iterator(); iterator.hasNext(); ) {
             var kv = iterator.next();
@@ -60,8 +60,8 @@ public class AlertManager {
     }
 
     private void conditionsSatisfied(Warnable warnable, Warning warning) {
-        if(GlobalQuake.instance != null){
-            GlobalQuake.instance.getEventHandler().fireEvent(new AlertIssuedEvent(warnable, warning));
+        if(GlobalQuakeServer.instance != null){
+            GlobalQuakeServer.instance.getEventHandler().fireEvent(new AlertIssuedEvent(warnable, warning));
         }
     }
 
