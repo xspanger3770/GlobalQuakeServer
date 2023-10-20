@@ -1,8 +1,8 @@
 package gqserver.server;
 
 import gqserver.core.GlobalQuakeServer;
+import gqserver.events.specific.ServerStatusChangedEvent;
 import gqserver.exception.RuntimeApplicationException;
-import org.tinylog.Logger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -15,50 +15,63 @@ import java.util.concurrent.Executors;
 
 public class GQServerSocket {
 
+    private static final int TIMEOUT = 60 * 1000;
     private SocketStatus status;
-    private ExecutorService serverExec;
-
-    private List<ServerClient> clients;
+    private final ExecutorService serverExec;
+    private final ExecutorService handshakeService;
+    private final List<ServerClient> clients;
 
     public GQServerSocket() {
         status = SocketStatus.IDLE;
         serverExec = Executors.newSingleThreadExecutor();
+        handshakeService = Executors.newSingleThreadExecutor();
         clients = new ArrayList<>();
     }
 
     public synchronized void run(String ip, int port) throws IOException {
-        status = SocketStatus.OPENING;
-        try {
-            ServerSocket serverSocket = new ServerSocket();
+        setStatus(SocketStatus.OPENING);
+        try (ServerSocket serverSocket = new ServerSocket()){
             serverSocket.bind(new InetSocketAddress(ip, port));
+            serverSocket.setSoTimeout(TIMEOUT);
             serverExec.submit(() -> serverThread(serverSocket));
-            status = SocketStatus.RUNNING;
+            setStatus(SocketStatus.RUNNING);
         } catch (IOException e) {
-            status = SocketStatus.IDLE;
+            setStatus(SocketStatus.IDLE);
             throw new RuntimeApplicationException("Unable to open server", e);
         }
     }
 
     private Runnable serverThread(ServerSocket serverSocket) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                while (serverSocket.isBound()) {
-                    try {
-                        Socket socket = serverSocket.accept();
-                        clients.add(new ServerClient(socket));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+        return () -> {
+            while (serverSocket.isBound()) {
+                try {
+                    Socket socket = serverSocket.accept();
+                    ServerClient client;
+                    clients.add(client = new ServerClient(socket));
+                    handshakeService.submit(() -> handshake(client));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-
-                onClose();
             }
+
+            onClose();
         };
     }
 
+    private void handshake(ServerClient client) {
+
+    }
+
     private void onClose() {
-        status = SocketStatus.IDLE;
+        setStatus(SocketStatus.IDLE);
+        if(GlobalQuakeServer.instance != null){
+            GlobalQuakeServer.instance.getEventHandler().fireEvent(new ServerStatusChangedEvent());
+        }
+    }
+
+    public void setStatus(SocketStatus status) {
+        this.status = status;
+
     }
 
     public SocketStatus getStatus() {

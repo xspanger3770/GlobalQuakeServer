@@ -18,4 +18,5 @@ public interface GlobalQuakeEventListener {
     @SuppressWarnings("unused")
     void onShakemapCreated(ShakeMapCreatedEvent shakeMapCreatedEvent);
 
+    void onServerStatusChanged(ServerStatusChangedEvent serverStatusChangedEvent);
 }

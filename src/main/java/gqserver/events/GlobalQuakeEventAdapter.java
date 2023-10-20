@@ -36,4 +36,8 @@ public class GlobalQuakeEventAdapter implements GlobalQuakeEventListener{
 
     }
 
+    @Override
+    public void onServerStatusChanged(ServerStatusChangedEvent serverStatusChangedEvent) {
+
+    }
 }

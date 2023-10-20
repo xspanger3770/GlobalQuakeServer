@@ -4,7 +4,6 @@ import gqserver.core.GlobalQuakeServer;
 import gqserver.database.StationDatabaseManager;
 import gqserver.database.StationSource;
 import gqserver.exception.ApplicationErrorHandler;
-import gqserver.exception.RuntimeApplicationException;
 import gqserver.exception.FatalIOException;
 import gqserver.geo.taup.TauPTravelTimeCalculator;
 import gqserver.intensity.IntensityTable;
