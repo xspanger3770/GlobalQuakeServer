@@ -45,6 +45,7 @@ hs_err_pid*
 #Other
 idea.png
 GlobalQuake/
+GlobalQuakeServer/
 old/
 out/
 training_datasets/
