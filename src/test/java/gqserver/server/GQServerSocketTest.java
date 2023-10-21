@@ -1,10 +1,13 @@
 package gqserver.server;
 
+import gqserver.api.ServerApiInfo;
+import gqserver.api.packets.HandshakePacket;
 import gqserver.exception.RuntimeApplicationException;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -25,7 +28,12 @@ public class GQServerSocketTest {
     }
 
     public static void main(String[] args) throws IOException {
-        new Socket().connect(new InetSocketAddress("0.0.0.0", 12345));
+        Socket socket  = new Socket();
+        socket.connect(new InetSocketAddress("0.0.0.0", 12345));
+
+
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        out.writeObject(new HandshakePacket(ServerApiInfo.COMPATIBILITY_VERSION));
     }
 
 }

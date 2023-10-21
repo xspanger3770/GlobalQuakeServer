@@ -1,7 +1,6 @@
-package gqserver.server;
+package gqserver.api;
 
 import gqserver.api.Packet;
-import gqserver.api.packets.TerminationPacket;
 import gqserver.exception.UnknownPacketException;
 
 import java.io.*;
@@ -17,9 +16,14 @@ public class ServerClient {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
 
+    private final long joinTime;
+    private long lastHeartbeat;
+
     public ServerClient(Socket socket) {
         this.socket = socket;
         this.id = nextID.getAndIncrement();
+        this.joinTime = System.currentTimeMillis();
+        this.lastHeartbeat = joinTime;
     }
 
     private ObjectInputStream getInputStream() throws IOException {
@@ -38,7 +42,7 @@ public class ServerClient {
         return outputStream;
     }
 
-    public Packet readPakcet() throws IOException, UnknownPacketException {
+    public Packet readPacket() throws IOException, UnknownPacketException {
         try {
             Object obj = getInputStream().readObject();
             if(obj instanceof Packet){
@@ -62,5 +66,21 @@ public class ServerClient {
 
     public int getID() {
         return id;
+    }
+
+    public long getJoinTime() {
+        return joinTime;
+    }
+
+    public boolean isConnected() {
+        return socket.isConnected();
+    }
+
+    public void noteHeartbeat() {
+        lastHeartbeat = System.currentTimeMillis();
+    }
+
+    public long getLastHeartbeat() {
+        return lastHeartbeat;
     }
 }
