@@ -47,14 +47,14 @@ public class ServerStatusPanel extends JPanel {
 
         JPanel ipPanel = new JPanel();
         ipPanel.setLayout(new BoxLayout(ipPanel, BoxLayout.X_AXIS));
-        ipPanel.add(new JLabel("IP Address:"));
+        ipPanel.add(new JLabel("IP Address: "));
         ipPanel.add(addressField = new JTextField("0.0.0.0",20));
 
         addressPanel.add(ipPanel);
 
         JPanel portPanel = new JPanel();
         portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.X_AXIS));
-        portPanel.add(new JLabel("Port:"));
+        portPanel.add(new JLabel("Port: "));
         portPanel.add(portField = new JTextField("12345",20));
 
         addressPanel.add(portPanel);
@@ -104,11 +104,13 @@ public class ServerStatusPanel extends JPanel {
                     } catch(Exception e){
                         Main.getErrorHandler().handleException(new RuntimeApplicationException("Failed to start server", e));
                     }
-                } else if(status == SocketStatus.RUNNING){
-                    try {
-                        GlobalQuakeServer.instance.getServerSocket().stop();
-                    } catch (IOException e) {
-                        Main.getErrorHandler().handleException(new RuntimeApplicationException("Failed to stop server", e));
+                } else if(status == SocketStatus.RUNNING) {
+                    if(confirm("Are you sure you want to close the server?")) {
+                        try {
+                            GlobalQuakeServer.instance.getServerSocket().stop();
+                        } catch (IOException e) {
+                            Main.getErrorHandler().handleException(new RuntimeApplicationException("Failed to stop server", e));
+                        }
                     }
                 }
             }
@@ -116,6 +118,10 @@ public class ServerStatusPanel extends JPanel {
 
         topPanel.add(controlPanel);
         return topPanel;
+    }
+
+    private boolean confirm(String s) {
+        return JOptionPane.showConfirmDialog(this, s, "Confirmation", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
     private JPanel wrap(JPanel target) {

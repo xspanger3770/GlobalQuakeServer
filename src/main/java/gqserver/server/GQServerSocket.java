@@ -1,10 +1,18 @@
 package gqserver.server;
 
+import gqserver.api.Packet;
+import gqserver.api.ServerApiInfo;
+import gqserver.api.packets.HandshakePacket;
+import gqserver.api.packets.TerminationPacket;
 import gqserver.core.GlobalQuakeServer;
 import gqserver.events.specific.ServerStatusChangedEvent;
+import gqserver.exception.InvalidPacketException;
 import gqserver.exception.RuntimeApplicationException;
+import gqserver.exception.UnknownPacketException;
+import org.tinylog.Logger;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -48,8 +56,27 @@ public class GQServerSocket {
         return null;
     }
 
-    private void handshake(ServerClient client) {
+    private void handshake(ServerClient client) throws IOException{
+        try {
+            Packet packet = client.readPakcet();
+            if(packet instanceof HandshakePacket){
+                HandshakePacket handshakePacket = (HandshakePacket) packet;
+                if(handshakePacket.getCompatVersion() != ServerApiInfo.COMPATIBILITY_VERSION){
+                    client.sendPacket(new TerminationPacket("Your client version is not compatible with the server!"));
+                    throw new InvalidPacketException("Client's version is not compatible %d != %d"
+                            .formatted(handshakePacket.getCompatVersion(), ServerApiInfo.COMPATIBILITY_VERSION));
+                }
+            }else {
+                throw new InvalidPacketException("Received packet is not handshake!");
+            }
 
+            Logger.info("Client #%d handshake succesfull".formatted(client.getID()));
+
+            clients.add(client);
+        } catch (UnknownPacketException | InvalidPacketException e) {
+            client.destroy();
+            Logger.error(e);
+        }
     }
 
     private void onClose() {
@@ -78,9 +105,13 @@ public class GQServerSocket {
         while (lastSocket.isBound() && !lastSocket.isClosed()) {
             try {
                 Socket socket = lastSocket.accept();
-                ServerClient client;
-                clients.add(client = new ServerClient(socket));
-                handshakeService.submit(() -> handshake(client));
+                handshakeService.submit(() -> {
+                    try {
+                        handshake(new ServerClient(socket));
+                    } catch (IOException e) {
+                        Logger.error(e);
+                    }
+                });
             } catch (IOException e) {
                 break;
             }
