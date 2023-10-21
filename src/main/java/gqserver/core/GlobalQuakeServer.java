@@ -7,6 +7,9 @@ import gqserver.core.archive.EarthquakeArchive;
 import gqserver.core.station.GlobalStationManager;
 import gqserver.database.StationDatabaseManager;
 import gqserver.events.GlobalQuakeEventHandler;
+import gqserver.server.GQServerSocket;
+
+import java.net.ServerSocket;
 
 public class GlobalQuakeServer {
 
@@ -24,6 +27,8 @@ public class GlobalQuakeServer {
 
 	private final GlobalStationManager globalStationManager;
 
+	private final GQServerSocket serverSocket;
+
 	public GlobalQuakeServer(StationDatabaseManager stationDatabaseManager) {
 		instance = this;
 		this.stationDatabaseManager = stationDatabaseManager;
@@ -40,6 +45,8 @@ public class GlobalQuakeServer {
 
 		globalQuakeRuntime = new GlobalQuakeRuntime();
 		seedlinkNetworksReader = new SeedlinkNetworksReader();
+
+		serverSocket = new GQServerSocket();
 	}
 
 	public void initStations(){
@@ -91,4 +98,7 @@ public class GlobalQuakeServer {
 		return eventHandler;
 	}
 
+	public GQServerSocket getServerSocket() {
+		return serverSocket;
+	}
 }

@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 import static org.junit.Assert.*;
 
@@ -20,6 +22,10 @@ public class GQServerSocketTest {
             }
         });
 
+    }
+
+    public static void main(String[] args) throws IOException {
+        new Socket().connect(new InetSocketAddress("0.0.0.0", 12345));
     }
 
 }
