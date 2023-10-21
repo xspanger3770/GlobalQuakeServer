@@ -11,6 +11,10 @@ import org.tinylog.Logger;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class SeedlinkNetworksReader {
 
@@ -18,6 +22,8 @@ public class SeedlinkNetworksReader {
 	private Instant lastData;
 
     private long lastReceivedRecord;
+
+	private ExecutorService seedlinkReaderService;
 
 	public static void main(String[] args) throws Exception{
 		SeedlinkReader reader = new SeedlinkReader("rtserve.iris.washington.edu", 18000);
@@ -45,9 +51,11 @@ public class SeedlinkNetworksReader {
 
 	public void run() {
 		createCache();
+		seedlinkReaderService = Executors.newCachedThreadPool();
 		GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getDatabaseReadLock().lock();
 		try{
-			GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getSeedlinkNetworks().forEach(this::runSeedlinkThread);
+			GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getSeedlinkNetworks().forEach(
+					seedlinkServer -> seedlinkReaderService.submit(() -> runSeedlinkThread(seedlinkServer)));
 		} finally {
 			GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getDatabaseReadLock().unlock();
 		}
@@ -63,87 +71,88 @@ public class SeedlinkNetworksReader {
 		}
 	}
 
+	private Queue<SeedlinkReader> activeReaders = new ConcurrentLinkedQueue<>();
+
 	private void runSeedlinkThread(SeedlinkNetwork seedlinkNetwork) {
-		Thread seedlinkThread = new Thread("Seedlink Network Thread - " + seedlinkNetwork.getHost()) {
-			@SuppressWarnings("BusyWait")
-			@Override
-			public void run() {
-				int reconnectDelay = RECONNECT_DELAY;
+		int reconnectDelay = RECONNECT_DELAY;
+		seedlinkNetwork.status = SeedlinkStatus.CONNECTING;
+		seedlinkNetwork.connectedStations = 0;
 
-                while (true) {
-					seedlinkNetwork.status = SeedlinkStatus.CONNECTING;
-					seedlinkNetwork.connectedStations = 0;
+		SeedlinkReader reader = null;
+		try {
+			Logger.info("Connecting to seedlink server \"" + seedlinkNetwork.getHost() + "\"");
+			reader = new SeedlinkReader(seedlinkNetwork.getHost(), seedlinkNetwork.getPort(), 90, false);
+			activeReaders.add(reader);
 
-					SeedlinkReader reader = null;
-					try {
-						Logger.info("Connecting to seedlink server \"" + seedlinkNetwork.getHost() + "\"");
-						reader = new SeedlinkReader(seedlinkNetwork.getHost(), seedlinkNetwork.getPort(), 90, false);
-						reader.sendHello();
+			reader.sendHello();
 
-						reconnectDelay = RECONNECT_DELAY;
-						boolean first = true;
+			reconnectDelay = RECONNECT_DELAY;
+			boolean first = true;
 
-						for (AbstractStation s : GlobalQuakeServer.instance.getStationManager().getStations()) {
-							if (s.getSeedlinkNetwork() != null && s.getSeedlinkNetwork().equals(seedlinkNetwork)) {
-                                Logger.trace("Connecting to %s %s %s %s [%s]".formatted(s.getStationCode(), s.getNetworkCode(), s.getChannelName(), s.getLocationCode(), seedlinkNetwork.getName()));
-								if(!first) {
-									reader.sendCmd("DATA");
-								} else{
-									first = false;
-								}
-								reader.select(s.getNetworkCode(), s.getStationCode(), s.getLocationCode(),
-										s.getChannelName());
-								seedlinkNetwork.connectedStations++;
-							}
-						}
-
-						if(seedlinkNetwork.connectedStations == 0){
-							Logger.info("No stations connected to "+seedlinkNetwork.getName());
-							seedlinkNetwork.status = SeedlinkStatus.DISCONNECTED;
-							break;
-						}
-
-						reader.startData();
-						seedlinkNetwork.status = SeedlinkStatus.RUNNING;
-
-						while (reader.hasNext()) {
-							SeedlinkPacket slp = reader.readPacket();
-							try {
-								newPacket(slp.getMiniSeed());
-							} catch (Exception e) {
-								Logger.error(e);
-							}
-						}
-
-						reader.close();
-					} catch (Exception e) {
-						Logger.error(e);
-						if (reader != null) {
-							try {
-								reader.close();
-							} catch (Exception ex) {
-								Logger.error(ex);
-							}
-						}
+			for (AbstractStation s : GlobalQuakeServer.instance.getStationManager().getStations()) {
+				if (s.getSeedlinkNetwork() != null && s.getSeedlinkNetwork().equals(seedlinkNetwork)) {
+					Logger.trace("Connecting to %s %s %s %s [%s]".formatted(s.getStationCode(), s.getNetworkCode(), s.getChannelName(), s.getLocationCode(), seedlinkNetwork.getName()));
+					if(!first) {
+						reader.sendCmd("DATA");
+					} else{
+						first = false;
 					}
-
-					seedlinkNetwork.status = SeedlinkStatus.DISCONNECTED;
-					seedlinkNetwork.connectedStations = 0;
-					Logger.warn(seedlinkNetwork.getHost() + " Disconnected, Reconnecting after " + reconnectDelay
-							+ " seconds...");
-					try {
-						sleep(reconnectDelay * 1000L);
-						if(reconnectDelay < 60 * 5) {
-							reconnectDelay *= 2;
-						}
-					} catch (InterruptedException ignored) {
-
-					}
+					reader.select(s.getNetworkCode(), s.getStationCode(), s.getLocationCode(),
+							s.getChannelName());
+					seedlinkNetwork.connectedStations++;
 				}
 			}
-		};
 
-		seedlinkThread.start();
+			if(seedlinkNetwork.connectedStations == 0){
+				Logger.info("No stations connected to "+seedlinkNetwork.getName());
+				seedlinkNetwork.status = SeedlinkStatus.DISCONNECTED;
+				return;
+			}
+
+			reader.startData();
+			seedlinkNetwork.status = SeedlinkStatus.RUNNING;
+
+			while (reader.hasNext()) {
+				SeedlinkPacket slp = reader.readPacket();
+				try {
+					newPacket(slp.getMiniSeed());
+				} catch (Exception e) {
+					Logger.error(e);
+				}
+			}
+
+			reader.close();
+		} catch (Exception e) {
+			Logger.error(e);
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (Exception ex) {
+					Logger.error(ex);
+				}
+			}
+		}finally{
+			if(reader != null){
+				activeReaders.remove(reader);
+			}
+		}
+
+		seedlinkNetwork.status = SeedlinkStatus.DISCONNECTED;
+		seedlinkNetwork.connectedStations = 0;
+		Logger.warn(seedlinkNetwork.getHost() + " Disconnected, Reconnecting after " + reconnectDelay
+				+ " seconds...");
+
+		try {
+			Thread.sleep(reconnectDelay * 1000L);
+			if(reconnectDelay < 60 * 5) {
+				reconnectDelay *= 2;
+			}
+		} catch (InterruptedException ignored) {
+			Logger.warn("Thread interrupted, nothing will happen");
+			return;
+		}
+
+		seedlinkReaderService.submit(() -> runSeedlinkThread(seedlinkNetwork));
 	}
 
 	private void newPacket(DataRecord dr) {
@@ -171,4 +180,23 @@ public class SeedlinkNetworksReader {
         }
     }
 
+    public void stop() {
+		if(seedlinkReaderService != null) {
+			System.err.println("INT SDL");
+			seedlinkReaderService.shutdownNow();
+            for (Iterator<SeedlinkReader> iterator = activeReaders.iterator(); iterator.hasNext(); ) {
+                SeedlinkReader reader = iterator.next();
+                reader.close();
+            	iterator.remove();
+			}
+			try {
+				seedlinkReaderService.awaitTermination(10, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				Logger.error(e);
+			}
+
+			System.err.println("INT SDL DONE");
+		}
+		stationCache.clear();
+	}
 }

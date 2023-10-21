@@ -49,17 +49,19 @@ public class GlobalQuakeServer {
 		serverSocket = new GQServerSocket();
 	}
 
-	public void initStations(){
-		globalStationManager.initStations(stationDatabaseManager);
-	}
-
-	public GlobalQuakeServer runSeedlinkReader() {
-		seedlinkNetworksReader.run();
-		return this;
-	}
-
 	public void startRuntime(){
+		globalStationManager.initStations(stationDatabaseManager);
 		getGlobalQuakeRuntime().runThreads();
+		seedlinkNetworksReader.run();
+	}
+
+	public void stopRuntime(){
+		getGlobalQuakeRuntime().stop();
+		getSeedlinkReader().stop();
+
+		getEarthquakeAnalysis().getEarthquakes().clear();
+		getClusterAnalysis().getClusters().clear();
+		getStationManager().getStations().clear();
 	}
 
 	public ClusterAnalysis getClusterAnalysis() {

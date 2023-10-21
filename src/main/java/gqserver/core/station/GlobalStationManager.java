@@ -22,6 +22,7 @@ public class GlobalStationManager {
             return;
         }
         stations.clear();
+        nextID.set(0);
         databaseManager.getStationDatabase().getDatabaseReadLock().lock();
         try {
             for (Network n : databaseManager.getStationDatabase().getNetworks()) {

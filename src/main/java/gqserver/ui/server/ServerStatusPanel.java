@@ -101,6 +101,7 @@ public class ServerStatusPanel extends JPanel {
                 if(status == SocketStatus.IDLE){
                     try {
                         GlobalQuakeServer.instance.getServerSocket().run(addressField.getText(), Integer.parseInt(portField.getText()));
+                        GlobalQuakeServer.instance.startRuntime();
                     } catch(Exception e){
                         Main.getErrorHandler().handleException(new RuntimeApplicationException("Failed to start server", e));
                     }
@@ -108,6 +109,7 @@ public class ServerStatusPanel extends JPanel {
                     if(confirm("Are you sure you want to close the server?")) {
                         try {
                             GlobalQuakeServer.instance.getServerSocket().stop();
+                            GlobalQuakeServer.instance.stopRuntime();
                         } catch (IOException e) {
                             Main.getErrorHandler().handleException(new RuntimeApplicationException("Failed to stop server", e));
                         }

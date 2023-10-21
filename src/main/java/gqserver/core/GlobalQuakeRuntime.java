@@ -17,15 +17,19 @@ public class GlobalQuakeRuntime {
     private long lastGC;
     private long clusterAnalysisT;
     private long lastQuakesT;
+    private ScheduledExecutorService execAnalysis;
+    private ScheduledExecutorService exec1Sec;
+    private ScheduledExecutorService execClusters;
+    private ScheduledExecutorService execQuake;
 
     public void runThreads() {
-        ScheduledExecutorService execAnalysis = Executors
+        execAnalysis = Executors
                 .newSingleThreadScheduledExecutor(new NamedThreadFactory("Station Analysis Thread"));
-        ScheduledExecutorService exec1Sec = Executors
+        exec1Sec = Executors
                 .newSingleThreadScheduledExecutor(new NamedThreadFactory("1-Second Loop Thread"));
-        ScheduledExecutorService execClusters = Executors
+        execClusters = Executors
                 .newSingleThreadScheduledExecutor(new NamedThreadFactory("Cluster Analysis Thread"));
-        ScheduledExecutorService execQuake = Executors
+        execQuake = Executors
                 .newSingleThreadScheduledExecutor(new NamedThreadFactory("Hypocenter Location Thread"));
 
         execAnalysis.scheduleAtFixedRate(() -> {
@@ -77,4 +81,24 @@ public class GlobalQuakeRuntime {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
+    public void stop() {
+
+        System.err.println("INT OTH");
+        execAnalysis.shutdownNow();
+        execQuake.shutdownNow();
+        execClusters.shutdownNow();
+        exec1Sec.shutdownNow();
+
+        try {
+            execAnalysis.awaitTermination(10, TimeUnit.SECONDS);
+            execQuake.awaitTermination(10, TimeUnit.SECONDS);
+            execClusters.awaitTermination(10, TimeUnit.SECONDS);
+            exec1Sec.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Logger.error(e);
+        }
+
+
+        System.err.println("INT OTH DONE");
+    }
 }
