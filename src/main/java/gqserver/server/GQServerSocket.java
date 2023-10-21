@@ -16,19 +16,20 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Iterator;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class GQServerSocket {
 
     private static final int HANDSHAKE_TIMEOUT = 10 * 1000;
     private static final int MAX_CLIENTS = 64;
+    private static final long WATCHDOG_TIMEOUT = 60 * 1000;
     private SocketStatus status;
     private ExecutorService serverExec;
     private ExecutorService handshakeService;
     private ExecutorService readerService;
+    private ScheduledExecutorService clientsWatchdog;
     private final Queue<ServerClient> clients;
 
     private volatile ServerSocket lastSocket;
@@ -42,17 +43,36 @@ public class GQServerSocket {
         serverExec = Executors.newSingleThreadExecutor();
         handshakeService = Executors.newCachedThreadPool();
         readerService = Executors.newCachedThreadPool();
+        clientsWatchdog = Executors.newSingleThreadScheduledExecutor();
 
         setStatus(SocketStatus.OPENING);
         try {
             lastSocket = new ServerSocket();
             lastSocket.bind(new InetSocketAddress(ip, port));
             serverExec.submit(this::runAccept);
+            clientsWatchdog.schedule(this::checkClients, 10, TimeUnit.SECONDS);
             setStatus(SocketStatus.RUNNING);
         } catch (IOException e) {
             setStatus(SocketStatus.IDLE);
             throw new RuntimeApplicationException("Unable to open server", e);
         }
+    }
+
+    private Runnable checkClients() {
+        return () -> {
+            for (Iterator<ServerClient> iterator = clients.iterator(); iterator.hasNext(); ) {
+                ServerClient client = iterator.next();
+                if(System.currentTimeMillis() - client.getLastHeartbeat() > WATCHDOG_TIMEOUT){
+                    try {
+                        client.destroy();
+                    } catch (IOException e) {
+                        Logger.error(e);
+                    }
+                    iterator.remove();
+                    Logger.info("Client #%d disconnected due to timeout".formatted(client.getID()));
+                }
+            }
+        };
     }
 
     private Runnable serverThread(ServerSocket serverSocket) {
@@ -88,6 +108,10 @@ public class GQServerSocket {
     }
 
     private void onClose() {
+        clients.clear();
+        if(!clientsWatchdog.isShutdown()){
+            clientsWatchdog.shutdown();
+        }
         setStatus(SocketStatus.IDLE);
     }
 
