@@ -73,7 +73,7 @@ public class ServerClient {
     }
 
     public boolean isConnected() {
-        return socket.isConnected();
+        return socket.isConnected() && !socket.isClosed();
     }
 
     public void noteHeartbeat() {

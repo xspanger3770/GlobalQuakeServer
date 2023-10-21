@@ -29,7 +29,7 @@ public class ServerStatusPanel extends JPanel {
     private Component createMiddlePanel() {
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        tabbedPane.addTab("Status", new JPanel());
+        tabbedPane.addTab("Status", new StatusTab());
         tabbedPane.addTab("Clients", new JPanel());
         tabbedPane.addTab("Earthquakes", new JPanel());
         tabbedPane.addTab("Clusters", new JPanel());

@@ -40,4 +40,14 @@ public class GlobalQuakeEventAdapter implements GlobalQuakeEventListener{
     public void onServerStatusChanged(ServerStatusChangedEvent serverStatusChangedEvent) {
 
     }
+
+    @Override
+    public void onClientJoin(ClientJoinedEvent clientJoinedEvent) {
+
+    }
+
+    @Override
+    public void onClientLeave(ClientLeftEvent clientLeftEvent) {
+
+    }
 }

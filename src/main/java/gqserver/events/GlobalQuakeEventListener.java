@@ -19,4 +19,8 @@ public interface GlobalQuakeEventListener {
     void onShakemapCreated(ShakeMapCreatedEvent shakeMapCreatedEvent);
 
     void onServerStatusChanged(ServerStatusChangedEvent serverStatusChangedEvent);
+
+    void onClientJoin(ClientJoinedEvent clientJoinedEvent);
+
+    void onClientLeave(ClientLeftEvent clientLeftEvent);
 }

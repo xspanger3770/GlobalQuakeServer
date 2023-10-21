@@ -6,6 +6,8 @@ import gqserver.api.ServerClient;
 import gqserver.api.packets.HandshakePacket;
 import gqserver.api.packets.TerminationPacket;
 import gqserver.core.GlobalQuakeServer;
+import gqserver.events.specific.ClientJoinedEvent;
+import gqserver.events.specific.ClientLeftEvent;
 import gqserver.events.specific.ServerStatusChangedEvent;
 import gqserver.exception.InvalidPacketException;
 import gqserver.exception.RuntimeApplicationException;
@@ -23,7 +25,7 @@ import java.util.concurrent.*;
 public class GQServerSocket {
 
     private static final int HANDSHAKE_TIMEOUT = 10 * 1000;
-    private static final int MAX_CLIENTS = 64;
+    public static final int MAX_CLIENTS = 64;
     private static final int WATCHDOG_TIMEOUT = 60 * 1000;
 
     public static final int READ_TIMEOUT = WATCHDOG_TIMEOUT + 10 * 1000;
@@ -35,6 +37,7 @@ public class GQServerSocket {
     private final Queue<ServerClient> clients;
 
     private volatile ServerSocket lastSocket;
+    private final Object joinMutex = new Object();
 
     public GQServerSocket() {
         status = SocketStatus.IDLE;
@@ -52,7 +55,7 @@ public class GQServerSocket {
             lastSocket = new ServerSocket();
             lastSocket.bind(new InetSocketAddress(ip, port));
             serverExec.submit(this::runAccept);
-            clientsWatchdog.schedule(this::checkClients, 10, TimeUnit.SECONDS);
+            clientsWatchdog.scheduleAtFixedRate(this::checkClients, 0, 10, TimeUnit.SECONDS);
             setStatus(SocketStatus.RUNNING);
         } catch (IOException e) {
             setStatus(SocketStatus.IDLE);
@@ -60,21 +63,20 @@ public class GQServerSocket {
         }
     }
 
-    private Runnable checkClients() {
-        return () -> {
-            for (Iterator<ServerClient> iterator = clients.iterator(); iterator.hasNext(); ) {
-                ServerClient client = iterator.next();
-                if(!client.isConnected() || System.currentTimeMillis() - client.getLastHeartbeat() > WATCHDOG_TIMEOUT){
-                    try {
-                        client.destroy();
-                    } catch (IOException e) {
-                        Logger.error(e);
-                    }
-                    iterator.remove();
-                    Logger.info("Client #%d disconnected due to timeout".formatted(client.getID()));
+    private void checkClients() {
+        for (Iterator<ServerClient> iterator = clients.iterator(); iterator.hasNext(); ) {
+            ServerClient client = iterator.next();
+            if(!client.isConnected() || System.currentTimeMillis() - client.getLastHeartbeat() > WATCHDOG_TIMEOUT){
+                try {
+                    client.destroy();
+                } catch (IOException e) {
+                    Logger.error(e);
                 }
+                iterator.remove();
+                GlobalQuakeServer.instance.getEventHandler().fireEvent(new ClientLeftEvent(client));
+                Logger.info("Client #%d disconnected due to timeout".formatted(client.getID()));
             }
-        };
+        }
     }
 
     private Runnable serverThread(ServerSocket serverSocket) {
@@ -95,13 +97,16 @@ public class GQServerSocket {
                 throw new InvalidPacketException("Received packet is not handshake!");
             }
 
-            if(clients.size() >= MAX_CLIENTS){
-                client.sendPacket(new TerminationPacket("Server is full!"));
-                client.destroy();
-            } else {
-                Logger.info("Client #%d handshake successfull".formatted(client.getID()));
-                readerService.submit(new ClientReader(client));
-                clients.add(client);
+            synchronized (joinMutex) {
+                if (clients.size() >= MAX_CLIENTS) {
+                    client.sendPacket(new TerminationPacket("Server is full!"));
+                    client.destroy();
+                } else {
+                    Logger.info("Client #%d handshake successfull".formatted(client.getID()));
+                    readerService.submit(new ClientReader(client));
+                    clients.add(client);
+                    GlobalQuakeServer.instance.getEventHandler().fireEvent(new ClientJoinedEvent(client));
+                }
             }
         } catch (UnknownPacketException | InvalidPacketException e) {
             client.destroy();
@@ -157,5 +162,9 @@ public class GQServerSocket {
         }
 
         onClose();
+    }
+
+    public int getClientCount() {
+        return clients.size();
     }
 }
