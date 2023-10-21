@@ -24,7 +24,9 @@ public class GQServerSocket {
 
     private static final int HANDSHAKE_TIMEOUT = 10 * 1000;
     private static final int MAX_CLIENTS = 64;
-    private static final long WATCHDOG_TIMEOUT = 60 * 1000;
+    private static final int WATCHDOG_TIMEOUT = 60 * 1000;
+
+    public static final int READ_TIMEOUT = WATCHDOG_TIMEOUT + 10 * 1000;
     private SocketStatus status;
     private ExecutorService serverExec;
     private ExecutorService handshakeService;
@@ -62,7 +64,7 @@ public class GQServerSocket {
         return () -> {
             for (Iterator<ServerClient> iterator = clients.iterator(); iterator.hasNext(); ) {
                 ServerClient client = iterator.next();
-                if(System.currentTimeMillis() - client.getLastHeartbeat() > WATCHDOG_TIMEOUT){
+                if(!client.isConnected() || System.currentTimeMillis() - client.getLastHeartbeat() > WATCHDOG_TIMEOUT){
                     try {
                         client.destroy();
                     } catch (IOException e) {

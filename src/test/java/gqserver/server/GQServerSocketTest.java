@@ -27,13 +27,15 @@ public class GQServerSocketTest {
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         Socket socket  = new Socket();
         socket.connect(new InetSocketAddress("0.0.0.0", 12345));
 
 
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         out.writeObject(new HandshakePacket(ServerApiInfo.COMPATIBILITY_VERSION));
+
+        Thread.sleep(120 * 1000);
     }
 
 }

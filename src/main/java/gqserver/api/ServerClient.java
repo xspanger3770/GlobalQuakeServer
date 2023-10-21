@@ -83,4 +83,8 @@ public class ServerClient {
     public long getLastHeartbeat() {
         return lastHeartbeat;
     }
+
+    public Socket getSocket() {
+        return socket;
+    }
 }

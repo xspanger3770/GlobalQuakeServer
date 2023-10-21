@@ -15,21 +15,21 @@ public class ClientReader implements Runnable {
 
     @Override
     public void run() {
-        while(client.isConnected()){
-            try {
+        try {
+            client.getSocket().setSoTimeout(GQServerSocket.READ_TIMEOUT);
+            while (client.isConnected()) {
                 Packet packet = client.readPacket();
                 packet.onServerReceive(client);
-            } catch (Exception e) {
-                Logger.error("Client #%d experienced a crash while reading!", client.getID());
-                Logger.error(e);
-                break;
             }
-        }
-
-        try {
-            client.destroy();
-        } catch (IOException e) {
+        } catch (Exception e) {
+            Logger.error("Client #%d experienced a crash while reading!".formatted(client.getID()));
             Logger.error(e);
+        } finally {
+            try {
+                client.destroy();
+            } catch (IOException e) {
+                Logger.error(e);
+            }
         }
     }
 }
