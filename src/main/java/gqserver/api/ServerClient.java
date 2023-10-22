@@ -1,6 +1,6 @@
 package gqserver.api;
 
-import gqserver.api.Packet;
+import gqserver.api.data.ServerClientConfig;
 import gqserver.exception.UnknownPacketException;
 
 import java.io.*;
@@ -25,6 +25,8 @@ public class ServerClient {
     private long receivedPackets = 0;
 
     private long sentPackets = 0;
+
+    private ServerClientConfig clientConfig;
 
     public ServerClient(Socket socket) {
         this.socket = socket;
@@ -63,6 +65,13 @@ public class ServerClient {
         }
     }
 
+    public void setClientConfig(ServerClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
+    }
+
+    public ServerClientConfig getClientConfig() {
+        return clientConfig;
+    }
 
     public void sendPacket(Packet packet) throws IOException{
         getOutputStream().writeObject(packet);

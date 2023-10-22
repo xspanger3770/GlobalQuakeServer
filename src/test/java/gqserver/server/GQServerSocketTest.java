@@ -1,8 +1,8 @@
 package gqserver.server;
 
-import gqserver.api.ServerApiInfo;
-import gqserver.api.packets.HandshakePacket;
-import gqserver.api.packets.HeartbeatPacket;
+import gqserver.api.data.ServerClientConfig;
+import gqserver.api.packets.system.HandshakePacket;
+import gqserver.api.packets.system.HeartbeatPacket;
 import gqserver.exception.RuntimeApplicationException;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
@@ -49,7 +49,7 @@ public class GQServerSocketTest {
 
 
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        out.writeObject(new HandshakePacket(ServerApiInfo.COMPATIBILITY_VERSION));
+        out.writeObject(new HandshakePacket(1, new ServerClientConfig(false, false)));
 
         while(true){
             Thread.sleep(1000);

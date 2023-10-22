@@ -1,10 +1,9 @@
 package gqserver.server;
 
 import gqserver.api.Packet;
-import gqserver.api.ServerApiInfo;
 import gqserver.api.ServerClient;
-import gqserver.api.packets.HandshakePacket;
-import gqserver.api.packets.TerminationPacket;
+import gqserver.api.packets.system.HandshakePacket;
+import gqserver.api.packets.system.TerminationPacket;
 import gqserver.core.GlobalQuakeServer;
 import gqserver.events.specific.ClientJoinedEvent;
 import gqserver.events.specific.ClientLeftEvent;
@@ -28,11 +27,14 @@ import java.util.concurrent.TimeUnit;
 
 public class GQServerSocket {
 
+    public static final int COMPATIBILITY_VERSION = 2;
+
     private static final int HANDSHAKE_TIMEOUT = 10 * 1000;
     public static final int MAX_CLIENTS = 64;
     private static final int WATCHDOG_TIMEOUT = 60 * 1000;
 
     public static final int READ_TIMEOUT = WATCHDOG_TIMEOUT + 10 * 1000;
+    private final DataService dataService;
     private SocketStatus status;
     private ExecutorService handshakeService;
     private ExecutorService readerService;
@@ -45,6 +47,7 @@ public class GQServerSocket {
     public GQServerSocket() {
         status = SocketStatus.IDLE;
         clients = new MonitorableCopyOnWriteArrayList<>();
+        dataService = new DataService();
     }
 
     public void run(String ip, int port) {
@@ -87,10 +90,10 @@ public class GQServerSocket {
         try {
             Packet packet = client.readPacket();
             if(packet instanceof HandshakePacket handshakePacket){
-                if(handshakePacket.getCompatVersion() != ServerApiInfo.COMPATIBILITY_VERSION){
+                if(handshakePacket.getCompatVersion() != COMPATIBILITY_VERSION){
                     client.sendPacket(new TerminationPacket("Your client version is not compatible with the server!"));
                     throw new InvalidPacketException("Client's version is not compatible %d != %d"
-                            .formatted(handshakePacket.getCompatVersion(), ServerApiInfo.COMPATIBILITY_VERSION));
+                            .formatted(handshakePacket.getCompatVersion(), COMPATIBILITY_VERSION));
                 }
             }else {
                 throw new InvalidPacketException("Received packet is not handshake!");

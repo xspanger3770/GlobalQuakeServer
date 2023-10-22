@@ -1,4 +1,4 @@
-package gqserver.api.packets;
+package gqserver.api.packets.system;
 
 import gqserver.api.Packet;
 import gqserver.api.ServerClient;
