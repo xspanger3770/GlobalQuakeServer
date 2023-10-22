@@ -5,6 +5,9 @@ import gqserver.exception.UnknownPacketException;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServerClient {
@@ -18,6 +21,10 @@ public class ServerClient {
 
     private final long joinTime;
     private long lastHeartbeat;
+
+    private long receivedPackets = 0;
+
+    private long sentPackets = 0;
 
     public ServerClient(Socket socket) {
         this.socket = socket;
@@ -46,6 +53,7 @@ public class ServerClient {
         try {
             Object obj = getInputStream().readObject();
             if(obj instanceof Packet){
+                receivedPackets++;
                 return (Packet) obj;
             }
 
@@ -58,6 +66,7 @@ public class ServerClient {
 
     public void sendPacket(Packet packet) throws IOException{
         getOutputStream().writeObject(packet);
+        sentPackets++;
     }
 
     public void destroy() throws IOException {
@@ -72,6 +81,10 @@ public class ServerClient {
         return joinTime;
     }
 
+    public LocalDateTime getJoinDate(){
+        return Instant.ofEpochMilli(getJoinTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
     public boolean isConnected() {
         return socket.isConnected() && !socket.isClosed();
     }
@@ -84,7 +97,19 @@ public class ServerClient {
         return lastHeartbeat;
     }
 
+    public long getDelay(){
+        return System.currentTimeMillis() - getLastHeartbeat();
+    }
+
     public Socket getSocket() {
         return socket;
+    }
+
+    public long getReceivedPackets() {
+        return receivedPackets;
+    }
+
+    public long getSentPackets() {
+        return sentPackets;
     }
 }
