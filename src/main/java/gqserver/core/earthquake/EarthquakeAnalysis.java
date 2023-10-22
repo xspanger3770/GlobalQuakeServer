@@ -79,10 +79,6 @@ public class EarthquakeAnalysis {
         if (cluster.getEarthquake() != null) {
             if (cluster.getPreviousHypocenter() != null && cluster.lastEpicenterUpdate != cluster.updateCount) {
                 calculateMagnitude(cluster, cluster.getPreviousHypocenter());
-                synchronized (cluster.getEarthquake().magsLock) {
-                    cluster.getEarthquake().setMag(cluster.getPreviousHypocenter().magnitude);
-                    cluster.getEarthquake().setMags(cluster.getPreviousHypocenter().mags);
-                }
             }
             int count = pickedEvents.size();
             if (count >= 24 && Settings.reduceRevisions) {
@@ -846,9 +842,6 @@ public class EarthquakeAnalysis {
     private void updateHypocenter(Cluster cluster, Hypocenter bestHypocenter) {
         Earthquake newEarthquake = new Earthquake(cluster, bestHypocenter.lat, bestHypocenter.lon, bestHypocenter.depth,
                 bestHypocenter.origin);
-        newEarthquake.setPct(100.0 * bestHypocenter.getCorrectness());
-        newEarthquake.setMag(bestHypocenter.magnitude);
-        newEarthquake.setMags(bestHypocenter.mags);
 
         if (cluster.getEarthquake() == null) {
             if (!testing) {
@@ -870,7 +863,6 @@ public class EarthquakeAnalysis {
         cluster.updateAnchor(bestHypocenter);
 
         cluster.revisionID += 1;
-        cluster.getEarthquake().setRevisionID(cluster.revisionID);
         cluster.setPreviousHypocenter(bestHypocenter);
 
         Earthquake earthquake = cluster.getEarthquake();

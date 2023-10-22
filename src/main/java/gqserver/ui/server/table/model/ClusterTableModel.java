@@ -9,8 +9,11 @@ import java.util.List;
 
 public class ClusterTableModel extends FilterableTableModel<Cluster>{
     private final List<Column<Cluster, ?>> columns = List.of(
-            Column.readonly("lat", Double.class, Cluster::getRootLat, new TableCellRendererAdapter<>()),
-            Column.readonly("lon", Double.class, Cluster::getRootLon, new TableCellRendererAdapter<>()));
+            Column.readonly("ID", Integer.class, Cluster::getId, new TableCellRendererAdapter<>()),
+            Column.readonly("Assigned Events", Integer.class, cluster -> cluster.getAssignedEvents().size(), new TableCellRendererAdapter<>()),
+            Column.readonly("level", Integer.class, Cluster::getActualLevel, new TableCellRendererAdapter<>()),
+            Column.readonly("rootLat", Double.class, Cluster::getRootLat, new TableCellRendererAdapter<>()),
+            Column.readonly("rootLon", Double.class, Cluster::getRootLon, new TableCellRendererAdapter<>()));
 
 
     public ClusterTableModel(List<Cluster> data) {

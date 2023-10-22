@@ -7,39 +7,32 @@ import gqserver.intensity.ShakeMap;
 import gqserver.regions.RegionUpdater;
 import gqserver.regions.Regional;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Earthquake implements Regional, Warnable {
 
 	private final ExecutorService shakemapExecutor;
-	private double lat;
-	private double lon;
-	private double depth;
-	private long origin;
+	private final UUID uuid;
 	private long lastUpdate;
 	private final Cluster cluster;
-	private double mag;
-	private List<MagnitudeReading> mags;
-	private double pct;
-	private int revisionID;
-	public final Object magsLock;
 	public int nextReportEventCount;
 	private String region;
 
 	private final RegionUpdater regionUpdater;
 	volatile private ShakeMap shakemap;
+	private double lastLat;
+	private double lastLon;
 
 	public Earthquake(Cluster cluster, double lat, double lon, double depth, long origin) {
-		this.lat = lat;
-		this.lon = lon;
-		this.depth = depth;
-		this.origin = origin;
+		this.uuid = UUID.randomUUID();
 		this.cluster = cluster;
-		this.mags = new ArrayList<>();
-		this.magsLock = new Object();
 		this.regionUpdater = new RegionUpdater(this);
 
 		this.lastUpdate = System.currentTimeMillis();
@@ -51,35 +44,18 @@ public class Earthquake implements Regional, Warnable {
 	}
 
 	public double getMag() {
-		return mag;
-	}
-
-	public void setMag(double mag) {
-		this.mag = mag;
-	}
-
-	public List<MagnitudeReading> getMags() {
-		return mags;
-	}
-
-	public void setMags(List<MagnitudeReading> mags) {
-		this.mags = mags;
+		Hypocenter hyp = getHypocenter();
+		return hyp == null ? 0.0 : hyp.magnitude;
 	}
 
 	public double getPct() {
-		return pct;
-	}
-
-	public void setPct(double pct) {
-		this.pct = pct;
+		Hypocenter hyp = getHypocenter();
+		return hyp == null ? 0.0 : 100.0 * hyp.getCorrectness();
 	}
 
 	public int getRevisionID() {
-		return revisionID;
-	}
-
-	public void setRevisionID(int revisionID) {
-		this.revisionID = revisionID;
+		Hypocenter hyp = getHypocenter();
+		return hyp == null ? 0 : cluster.revisionID;
 	}
 
 	public long getLastUpdate() {
@@ -87,44 +63,41 @@ public class Earthquake implements Regional, Warnable {
 	}
 
 	public double getDepth() {
-		return depth;
+		Hypocenter hyp = getHypocenter();
+		return hyp == null ? 0.0 : 100.0 * hyp.depth;
 	}
 
 	public double getLat() {
-		return lat;
+		Hypocenter hyp = getHypocenter();
+		return hyp == null ? 0.0 : 100.0 * hyp.lat;
 	}
 
 	public double getLon() {
-		return lon;
+		Hypocenter hyp = getHypocenter();
+		return hyp == null ? 0.0 : 100.0 * hyp.lon;
 	}
 
 	public long getOrigin() {
-		return origin;
+		Hypocenter hyp = getHypocenter();
+		return hyp == null ? 0L : hyp.origin;
 	}
 
 	public void update(Earthquake newEarthquake) {
-		double lastLat = lat;
-		double lastLon = lon;
-		this.lat = newEarthquake.getLat();
-		this.lon = newEarthquake.getLon();
-		this.depth = newEarthquake.getDepth();
-		this.origin = newEarthquake.getOrigin();
-		if (this.lat != lastLat || this.lon != lastLon) {
+		if (getLat() != lastLat || getLon() != lastLon) {
 			regionUpdater.updateRegion();
 		}
 
-		pct = newEarthquake.getPct();
-
-		synchronized (magsLock){
-			this.mag = newEarthquake.getMag();
-			this.mags = newEarthquake.mags;
-		}
-
+		lastLat = getLat();
+		lastLon = getLon();
 		this.lastUpdate = System.currentTimeMillis();
 	}
 
 	public Cluster getCluster() {
 		return cluster;
+	}
+
+	public Hypocenter getHypocenter(){
+		return getCluster().getPreviousHypocenter();
 	}
 
 	@Override
@@ -140,13 +113,12 @@ public class Earthquake implements Regional, Warnable {
 	@Override
 	public String toString() {
 		return "Earthquake{" +
-				"lat=" + lat +
-				", lon=" + lon +
-				", depth=" + depth +
-				", origin=" + origin +
-				", mag=" + mag +
-				", pct=" + pct +
-				", revisionID=" + revisionID +
+				"uuid=" + uuid +
+				", lastUpdate=" + lastUpdate +
+				", nextReportEventCount=" + nextReportEventCount +
+				", region='" + region + '\'' +
+				", lastLat=" + lastLat +
+				", lastLon=" + lastLon +
 				'}';
 	}
 
@@ -174,5 +146,13 @@ public class Earthquake implements Regional, Warnable {
 
 	public ShakeMap getShakemap() {
 		return shakemap;
+	}
+
+	public LocalDateTime getOriginDate() {
+		return Instant.ofEpochMilli(getOrigin()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+	}
+
+	public UUID getUuid() {
+		return uuid;
 	}
 }

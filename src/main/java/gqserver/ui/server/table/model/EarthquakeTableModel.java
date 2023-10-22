@@ -2,15 +2,24 @@ package gqserver.ui.server.table.model;
 
 import gqserver.api.ServerClient;
 import gqserver.core.earthquake.data.Earthquake;
+import gqserver.core.earthquake.quality.Quality;
 import gqserver.ui.server.table.Column;
+import gqserver.ui.server.table.LastUpdateRenderer;
 import gqserver.ui.server.table.TableCellRendererAdapter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class EarthquakeTableModel extends FilterableTableModel<Earthquake>{
     private final List<Column<Earthquake, ?>> columns = List.of(
-            Column.readonly("lat", Double.class, Earthquake::getLat, new TableCellRendererAdapter<>()),
-            Column.readonly("lon", Double.class, Earthquake::getLon, new TableCellRendererAdapter<>()));
+            Column.readonly("Origin", LocalDateTime.class, Earthquake::getOriginDate, new LastUpdateRenderer<>()),
+            Column.readonly("Region", String.class, Earthquake::getRegion, new TableCellRendererAdapter<>()),
+            Column.readonly("Magnitude", Double.class, Earthquake::getMag, new TableCellRendererAdapter<>()),
+            Column.readonly("Depth", Double.class, Earthquake::getDepth, new TableCellRendererAdapter<>()),
+            Column.readonly("Lat", Double.class, Earthquake::getLat, new TableCellRendererAdapter<>()),
+            Column.readonly("Lon", Double.class, Earthquake::getLon, new TableCellRendererAdapter<>()),
+            Column.readonly("Quality", Quality.class, earthquake -> earthquake.getHypocenter().quality, new TableCellRendererAdapter<>()),
+            Column.readonly("Revision", Integer.class, Earthquake::getRevisionID, new TableCellRendererAdapter<>()));
 
 
     public EarthquakeTableModel(List<Earthquake> data) {
