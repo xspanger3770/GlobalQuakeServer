@@ -12,6 +12,7 @@ import gqserver.events.specific.ServerStatusChangedEvent;
 import gqserver.exception.InvalidPacketException;
 import gqserver.exception.RuntimeApplicationException;
 import gqserver.exception.UnknownPacketException;
+import gqserver.utils.monitorable.MonitorableCopyOnWriteArrayList;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -19,6 +20,8 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
 
@@ -34,14 +37,14 @@ public class GQServerSocket {
     private ExecutorService handshakeService;
     private ExecutorService readerService;
     private ScheduledExecutorService clientsWatchdog;
-    private final Queue<ServerClient> clients;
+    private final List<ServerClient> clients;
 
     private volatile ServerSocket lastSocket;
     private final Object joinMutex = new Object();
 
     public GQServerSocket() {
         status = SocketStatus.IDLE;
-        clients = new ConcurrentLinkedQueue<>();
+        clients = new MonitorableCopyOnWriteArrayList<>();
     }
 
     public void run(String ip, int port) throws IOException {
@@ -166,5 +169,9 @@ public class GQServerSocket {
 
     public int getClientCount() {
         return clients.size();
+    }
+
+    public List<ServerClient> getClients() {
+        return clients;
     }
 }
