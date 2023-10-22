@@ -1,7 +1,6 @@
 package gqserver.ui.server.tabs;
 
 import gqserver.core.GlobalQuakeServer;
-import gqserver.core.earthquake.data.Earthquake;
 import gqserver.events.GlobalQuakeEventAdapter;
 import gqserver.events.specific.*;
 import gqserver.ui.server.table.GQTable;

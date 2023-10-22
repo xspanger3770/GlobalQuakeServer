@@ -4,8 +4,6 @@ import gqserver.core.earthquake.ArchivedQuake;
 import gqserver.core.earthquake.data.Earthquake;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static org.junit.Assert.*;
 
 public class RegionUpdaterTest {
@@ -28,25 +26,8 @@ public class RegionUpdaterTest {
 
     @Test
     public void testEarthquakeRegion(){
-        Earthquake earthquake = new Earthquake(null,50,17,10, System.currentTimeMillis());
+        Earthquake earthquake = new Earthquake(null);
         assertNotNull(earthquake.getRegion());
-    }
-
-    @Test
-    public void testEarthquakeRegionUpdate(){
-        try {
-            Regions.init();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Earthquake earthquake = new Earthquake(null,50,17,10, System.currentTimeMillis());
-        String region1 = earthquake.getRegion();
-        Regions.awaitDownload();
-        Earthquake earthquake2 = new Earthquake(null,0,17,10, System.currentTimeMillis());
-        Regions.awaitDownload();
-        earthquake.update(earthquake2);
-        Regions.awaitDownload();
-        assertNotEquals(region1, earthquake.getRegion());
     }
 
     @Test

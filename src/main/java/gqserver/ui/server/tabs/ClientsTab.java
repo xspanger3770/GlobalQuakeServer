@@ -1,6 +1,5 @@
 package gqserver.ui.server.tabs;
 
-import gqserver.api.ServerClient;
 import gqserver.core.GlobalQuakeServer;
 import gqserver.events.GlobalQuakeEventAdapter;
 import gqserver.events.specific.ClientJoinedEvent;

@@ -1,9 +1,6 @@
 package gqserver.core.earthquake.data;
 
-import gqserver.core.GlobalQuakeServer;
 import gqserver.core.alert.Warnable;
-import gqserver.events.specific.ShakeMapCreatedEvent;
-import gqserver.intensity.ShakeMap;
 import gqserver.regions.RegionUpdater;
 import gqserver.regions.Regional;
 
@@ -11,12 +8,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Earthquake implements Regional, Warnable {
 
-	private final ExecutorService shakemapExecutor;
 	private final UUID uuid;
 	private long lastUpdate;
 	private final Cluster cluster;
@@ -24,17 +18,15 @@ public class Earthquake implements Regional, Warnable {
 	private String region;
 
 	private final RegionUpdater regionUpdater;
-	volatile private ShakeMap shakemap;
 	private double lastLat;
 	private double lastLon;
 
-	public Earthquake(Cluster cluster, double lat, double lon, double depth, long origin) {
+	public Earthquake(Cluster cluster) {
 		this.uuid = UUID.randomUUID();
 		this.cluster = cluster;
 		this.regionUpdater = new RegionUpdater(this);
 
 		this.lastUpdate = System.currentTimeMillis();
-		shakemapExecutor = Executors.newSingleThreadExecutor();
 	}
 
 	public void uppdateRegion(){
@@ -80,7 +72,7 @@ public class Earthquake implements Regional, Warnable {
 		return hyp == null ? 0L : hyp.origin;
 	}
 
-	public void update(Earthquake newEarthquake) {
+	public void update() {
 		if (getLat() != lastLat || getLon() != lastLon) {
 			regionUpdater.updateRegion();
 		}
@@ -130,20 +122,6 @@ public class Earthquake implements Regional, Warnable {
 	@Override
 	public double getWarningLon() {
 		return getLon();
-	}
-
-    public void updateShakemap(Hypocenter hypocenter) {
-		shakemapExecutor.submit(() -> {
-            double mag = hypocenter.magnitude;
-            shakemap = new ShakeMap(hypocenter, mag < 5.2 ? 6 : mag < 6.4 ? 5 : mag < 8.5 ? 4 : 3);
-            if(GlobalQuakeServer.instance != null) {
-                GlobalQuakeServer.instance.getEventHandler().fireEvent(new ShakeMapCreatedEvent(Earthquake.this));
-            }
-        });
-	}
-
-	public ShakeMap getShakemap() {
-		return shakemap;
 	}
 
 	public LocalDateTime getOriginDate() {

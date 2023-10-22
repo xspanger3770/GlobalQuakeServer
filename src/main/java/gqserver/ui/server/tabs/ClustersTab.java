@@ -1,7 +1,6 @@
 package gqserver.ui.server.tabs;
 
 import gqserver.core.GlobalQuakeServer;
-import gqserver.core.earthquake.data.Cluster;
 import gqserver.ui.server.table.GQTable;
 import gqserver.ui.server.table.model.ClusterTableModel;
 
