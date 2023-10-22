@@ -2,8 +2,8 @@ package gqserver.ui.server.action.source;
 
 import gqserver.database.StationDatabaseManager;
 import gqserver.database.StationSource;
-import gqserver.ui.server.EditStationSourceDialog;
-import gqserver.ui.server.table.FilterableTableModel;
+import gqserver.ui.server.dialog.EditStationSourceDialog;
+import gqserver.ui.server.table.model.FilterableTableModel;
 
 import javax.swing.*;
 import java.awt.*;

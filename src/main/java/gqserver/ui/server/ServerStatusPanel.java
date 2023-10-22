@@ -6,6 +6,8 @@ import gqserver.events.specific.ServerStatusChangedEvent;
 import gqserver.exception.RuntimeApplicationException;
 import gqserver.main.Main;
 import gqserver.server.SocketStatus;
+import gqserver.ui.server.tabs.SeedlinksTab;
+import gqserver.ui.server.tabs.StatusTab;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,10 +32,11 @@ public class ServerStatusPanel extends JPanel {
         JTabbedPane tabbedPane = new JTabbedPane();
 
         tabbedPane.addTab("Status", new StatusTab());
+        tabbedPane.addTab("Seedlinks", new SeedlinksTab());
+        tabbedPane.addTab("Stations", new JPanel());
         tabbedPane.addTab("Clients", new JPanel());
         tabbedPane.addTab("Earthquakes", new JPanel());
         tabbedPane.addTab("Clusters", new JPanel());
-        tabbedPane.addTab("Stations", new JPanel());
 
         return tabbedPane;
     }

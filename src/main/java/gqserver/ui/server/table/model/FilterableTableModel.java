@@ -1,4 +1,6 @@
-package gqserver.ui.server.table;
+package gqserver.ui.server.table.model;
+
+import gqserver.ui.server.table.TableCellRendererAdapter;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -74,4 +76,6 @@ public abstract class FilterableTableModel<E> extends AbstractTableModel {
 	public List<E> getData() {
 		return data;
 	}
+
+	public abstract TableCellRendererAdapter<?, ?> getColumnRenderer(int columnIndex);
 }

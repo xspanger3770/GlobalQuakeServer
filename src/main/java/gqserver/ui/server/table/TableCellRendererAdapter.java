@@ -1,6 +1,7 @@
 package gqserver.ui.server.table;
 
 import gqserver.main.Main;
+import gqserver.ui.server.table.model.FilterableTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

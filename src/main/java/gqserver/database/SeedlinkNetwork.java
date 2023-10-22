@@ -81,4 +81,15 @@ public final class SeedlinkNetwork implements Serializable {
         return statusBar;
     }
 
+    public int getSelectedStations() {
+        return selectedStations;
+    }
+
+    public int getAvailableStations() {
+        return availableStations;
+    }
+
+    public int getConnectedStations() {
+        return connectedStations;
+    }
 }

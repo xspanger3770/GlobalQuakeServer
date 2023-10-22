@@ -4,7 +4,7 @@ import gqserver.ui.server.action.seedlink.AddSeedlinkNetworkAction;
 import gqserver.ui.server.action.seedlink.EditSeedlinkNetworkAction;
 import gqserver.ui.server.action.seedlink.RemoveSeedlinkNetworkAction;
 import gqserver.ui.server.action.seedlink.UpdateSeedlinkNetworkAction;
-import gqserver.ui.server.table.SeedlinkNetworksTableModel;
+import gqserver.ui.server.table.model.SeedlinkNetworksTableModel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

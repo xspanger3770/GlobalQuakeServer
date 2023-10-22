@@ -1,6 +1,10 @@
-package gqserver.ui.server.table;
+package gqserver.ui.server.table.model;
 
 import gqserver.database.StationSource;
+import gqserver.ui.server.table.Column;
+import gqserver.ui.server.table.LastUpdateRenderer;
+import gqserver.ui.server.table.ProgressBarRenderer;
+import gqserver.ui.server.table.TableCellRendererAdapter;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
@@ -27,6 +31,7 @@ public class StationSourcesTableModel extends FilterableTableModel<StationSource
         return columns.get(columnIndex).getName();
     }
 
+    @Override
     public TableCellRendererAdapter<?, ?> getColumnRenderer(int columnIndex) {
         return columns.get(columnIndex).getRenderer();
     }
