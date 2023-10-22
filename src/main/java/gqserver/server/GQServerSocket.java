@@ -52,13 +52,13 @@ public class GQServerSocket {
         handshakeService = Executors.newCachedThreadPool();
         readerService = Executors.newCachedThreadPool();
         clientsWatchdog = Executors.newSingleThreadScheduledExecutor();
+        clientsWatchdog.scheduleAtFixedRate(this::checkClients, 0, 10, TimeUnit.SECONDS);
 
         setStatus(SocketStatus.OPENING);
         try {
             lastSocket = new ServerSocket();
             lastSocket.bind(new InetSocketAddress(ip, port));
             serverExec.submit(this::runAccept);
-            clientsWatchdog.scheduleAtFixedRate(this::checkClients, 0, 10, TimeUnit.SECONDS);
             setStatus(SocketStatus.RUNNING);
         } catch (IOException e) {
             setStatus(SocketStatus.IDLE);
@@ -67,19 +67,21 @@ public class GQServerSocket {
     }
 
     private void checkClients() {
+        List<ServerClient> toRemove = new LinkedList<>();
         for (Iterator<ServerClient> iterator = clients.iterator(); iterator.hasNext(); ) {
             ServerClient client = iterator.next();
             if(!client.isConnected() || System.currentTimeMillis() - client.getLastHeartbeat() > WATCHDOG_TIMEOUT){
                 try {
                     client.destroy();
-                } catch (IOException e) {
+                    toRemove.add(client);
+                    GlobalQuakeServer.instance.getEventHandler().fireEvent(new ClientLeftEvent(client));
+                    Logger.info("Client #%d disconnected due to timeout".formatted(client.getID()));
+                } catch (Exception e) {
                     Logger.error(e);
                 }
-                iterator.remove();
-                GlobalQuakeServer.instance.getEventHandler().fireEvent(new ClientLeftEvent(client));
-                Logger.info("Client #%d disconnected due to timeout".formatted(client.getID()));
             }
         }
+        clients.removeAll(toRemove);
     }
 
     private Runnable serverThread(ServerSocket serverSocket) {

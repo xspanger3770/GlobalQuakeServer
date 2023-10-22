@@ -64,17 +64,17 @@ public class Earthquake implements Regional, Warnable {
 
 	public double getDepth() {
 		Hypocenter hyp = getHypocenter();
-		return hyp == null ? 0.0 : 100.0 * hyp.depth;
+		return hyp == null ? 0.0 : hyp.depth;
 	}
 
 	public double getLat() {
 		Hypocenter hyp = getHypocenter();
-		return hyp == null ? 0.0 : 100.0 * hyp.lat;
+		return hyp == null ? 0.0 : hyp.lat;
 	}
 
 	public double getLon() {
 		Hypocenter hyp = getHypocenter();
-		return hyp == null ? 0.0 : 100.0 * hyp.lon;
+		return hyp == null ? 0.0 : hyp.lon;
 	}
 
 	public long getOrigin() {
