@@ -9,8 +9,6 @@ import gqserver.database.StationDatabaseManager;
 import gqserver.events.GlobalQuakeEventHandler;
 import gqserver.server.GQServerSocket;
 
-import java.net.ServerSocket;
-
 public class GlobalQuakeServer {
 
 	private final GlobalQuakeRuntime globalQuakeRuntime;

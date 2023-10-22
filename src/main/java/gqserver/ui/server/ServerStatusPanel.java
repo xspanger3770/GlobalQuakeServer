@@ -95,25 +95,22 @@ public class ServerStatusPanel extends JPanel {
             }
         });
 
-        controlButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                SocketStatus status = GlobalQuakeServer.instance.getServerSocket().getStatus();
-                if(status == SocketStatus.IDLE){
+        controlButton.addActionListener(actionEvent -> {
+            SocketStatus status = GlobalQuakeServer.instance.getServerSocket().getStatus();
+            if(status == SocketStatus.IDLE){
+                try {
+                    GlobalQuakeServer.instance.getServerSocket().run(addressField.getText(), Integer.parseInt(portField.getText()));
+                    GlobalQuakeServer.instance.startRuntime();
+                } catch(Exception e){
+                    Main.getErrorHandler().handleException(new RuntimeApplicationException("Failed to start server", e));
+                }
+            } else if(status == SocketStatus.RUNNING) {
+                if(confirm("Are you sure you want to close the server?")) {
                     try {
-                        GlobalQuakeServer.instance.getServerSocket().run(addressField.getText(), Integer.parseInt(portField.getText()));
-                        GlobalQuakeServer.instance.startRuntime();
-                    } catch(Exception e){
-                        Main.getErrorHandler().handleException(new RuntimeApplicationException("Failed to start server", e));
-                    }
-                } else if(status == SocketStatus.RUNNING) {
-                    if(confirm("Are you sure you want to close the server?")) {
-                        try {
-                            GlobalQuakeServer.instance.getServerSocket().stop();
-                            GlobalQuakeServer.instance.stopRuntime();
-                        } catch (IOException e) {
-                            Main.getErrorHandler().handleException(new RuntimeApplicationException("Failed to stop server", e));
-                        }
+                        GlobalQuakeServer.instance.getServerSocket().stop();
+                        GlobalQuakeServer.instance.stopRuntime();
+                    } catch (IOException e) {
+                        Main.getErrorHandler().handleException(new RuntimeApplicationException("Failed to stop server", e));
                     }
                 }
             }
@@ -123,6 +120,7 @@ public class ServerStatusPanel extends JPanel {
         return topPanel;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private boolean confirm(String s) {
         return JOptionPane.showConfirmDialog(this, s, "Confirmation", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }

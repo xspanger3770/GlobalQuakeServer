@@ -1,12 +1,10 @@
 package gqserver.ui.server.table.model;
 
 import gqserver.api.ServerClient;
-import gqserver.database.SeedlinkNetwork;
 import gqserver.ui.server.table.Column;
 import gqserver.ui.server.table.LastUpdateRenderer;
 import gqserver.ui.server.table.TableCellRendererAdapter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

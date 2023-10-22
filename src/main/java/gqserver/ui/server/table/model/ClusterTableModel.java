@@ -1,6 +1,5 @@
 package gqserver.ui.server.table.model;
 
-import gqserver.core.earthquake.data.Earthquake;
 import gqserver.core.earthquake.data.Cluster;
 import gqserver.ui.server.table.Column;
 import gqserver.ui.server.table.TableCellRendererAdapter;

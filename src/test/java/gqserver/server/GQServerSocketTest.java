@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("all")
 public class GQServerSocketTest {
 
     @Test
@@ -29,15 +30,13 @@ public class GQServerSocketTest {
 
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         var pool = Executors.newFixedThreadPool(100);
         for(int i = 0; i < 100; i++){
             pool.submit(() -> {
                 try {
                     ddos();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
+                } catch (IOException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             });

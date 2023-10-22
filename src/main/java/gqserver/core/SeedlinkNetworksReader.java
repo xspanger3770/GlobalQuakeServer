@@ -25,6 +25,8 @@ public class SeedlinkNetworksReader {
 
 	private ExecutorService seedlinkReaderService;
 
+	private final Queue<SeedlinkReader> activeReaders = new ConcurrentLinkedQueue<>();
+
 	public static void main(String[] args) throws Exception{
 		SeedlinkReader reader = new SeedlinkReader("rtserve.iris.washington.edu", 18000);
 		reader.select("AK", "D25K", "", "BHZ");
@@ -55,7 +57,7 @@ public class SeedlinkNetworksReader {
 		GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getDatabaseReadLock().lock();
 		try{
 			GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getSeedlinkNetworks().forEach(
-					seedlinkServer -> seedlinkReaderService.submit(() -> runSeedlinkThread(seedlinkServer)));
+					seedlinkServer -> seedlinkReaderService.submit(() -> runSeedlinkThread(seedlinkServer, RECONNECT_DELAY)));
 		} finally {
 			GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getDatabaseReadLock().unlock();
 		}
@@ -70,11 +72,7 @@ public class SeedlinkNetworksReader {
 			}
 		}
 	}
-
-	private Queue<SeedlinkReader> activeReaders = new ConcurrentLinkedQueue<>();
-
-	private void runSeedlinkThread(SeedlinkNetwork seedlinkNetwork) {
-		int reconnectDelay = RECONNECT_DELAY;
+	private void runSeedlinkThread(SeedlinkNetwork seedlinkNetwork, int reconnectDelay) {
 		seedlinkNetwork.status = SeedlinkStatus.CONNECTING;
 		seedlinkNetwork.connectedStations = 0;
 
@@ -86,7 +84,7 @@ public class SeedlinkNetworksReader {
 
 			reader.sendHello();
 
-			reconnectDelay = RECONNECT_DELAY;
+			reconnectDelay = RECONNECT_DELAY; // if connect succeeded then reset the delay
 			boolean first = true;
 
 			for (AbstractStation s : GlobalQuakeServer.instance.getStationManager().getStations()) {
@@ -152,7 +150,8 @@ public class SeedlinkNetworksReader {
 			return;
 		}
 
-		seedlinkReaderService.submit(() -> runSeedlinkThread(seedlinkNetwork));
+		int finalReconnectDelay = reconnectDelay;
+		seedlinkReaderService.submit(() -> runSeedlinkThread(seedlinkNetwork, finalReconnectDelay));
 	}
 
 	private void newPacket(DataRecord dr) {

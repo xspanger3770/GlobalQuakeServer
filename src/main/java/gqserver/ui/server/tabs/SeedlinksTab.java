@@ -16,10 +16,10 @@ public class SeedlinksTab extends JPanel {
         setLayout(new BorderLayout());
 
         SeedlinkStatusTableModel model;
-        add(new JScrollPane(new GQTable<SeedlinkNetwork>(
+        add(new JScrollPane(new GQTable<>(
                 model = new SeedlinkStatusTableModel(GlobalQuakeServer.instance.getStationDatabaseManager().getStationDatabase().getSeedlinkNetworks()))));
 
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> model.applyFilter(), 0,1, TimeUnit.SECONDS);
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(model::applyFilter, 0,1, TimeUnit.SECONDS);
     }
 
 }

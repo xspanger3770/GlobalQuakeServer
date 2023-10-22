@@ -19,11 +19,12 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class GQServerSocket {
 
@@ -33,7 +34,6 @@ public class GQServerSocket {
 
     public static final int READ_TIMEOUT = WATCHDOG_TIMEOUT + 10 * 1000;
     private SocketStatus status;
-    private ExecutorService serverExec;
     private ExecutorService handshakeService;
     private ExecutorService readerService;
     private ScheduledExecutorService clientsWatchdog;
@@ -47,8 +47,8 @@ public class GQServerSocket {
         clients = new MonitorableCopyOnWriteArrayList<>();
     }
 
-    public void run(String ip, int port) throws IOException {
-        serverExec = Executors.newSingleThreadExecutor();
+    public void run(String ip, int port) {
+        ExecutorService serverExec = Executors.newSingleThreadExecutor();
         handshakeService = Executors.newCachedThreadPool();
         readerService = Executors.newCachedThreadPool();
         clientsWatchdog = Executors.newSingleThreadScheduledExecutor();
@@ -68,9 +68,8 @@ public class GQServerSocket {
 
     private void checkClients() {
         List<ServerClient> toRemove = new LinkedList<>();
-        for (Iterator<ServerClient> iterator = clients.iterator(); iterator.hasNext(); ) {
-            ServerClient client = iterator.next();
-            if(!client.isConnected() || System.currentTimeMillis() - client.getLastHeartbeat() > WATCHDOG_TIMEOUT){
+        for (ServerClient client : clients) {
+            if (!client.isConnected() || System.currentTimeMillis() - client.getLastHeartbeat() > WATCHDOG_TIMEOUT) {
                 try {
                     client.destroy();
                     toRemove.add(client);
@@ -84,15 +83,10 @@ public class GQServerSocket {
         clients.removeAll(toRemove);
     }
 
-    private Runnable serverThread(ServerSocket serverSocket) {
-        return null;
-    }
-
     private void handshake(ServerClient client) throws IOException{
         try {
             Packet packet = client.readPacket();
-            if(packet instanceof HandshakePacket){
-                HandshakePacket handshakePacket = (HandshakePacket) packet;
+            if(packet instanceof HandshakePacket handshakePacket){
                 if(handshakePacket.getCompatVersion() != ServerApiInfo.COMPATIBILITY_VERSION){
                     client.sendPacket(new TerminationPacket("Your client version is not compatible with the server!"));
                     throw new InvalidPacketException("Client's version is not compatible %d != %d"
