@@ -10,7 +10,7 @@ import gqserver.events.specific.ClientLeftEvent;
 import gqserver.events.specific.ServerStatusChangedEvent;
 import gqserver.exception.InvalidPacketException;
 import gqserver.exception.RuntimeApplicationException;
-import gqserver.exception.UnknownPacketException;
+import gqserver.api.exception.UnknownPacketException;
 import gqserver.utils.monitorable.MonitorableCopyOnWriteArrayList;
 import org.tinylog.Logger;
 
