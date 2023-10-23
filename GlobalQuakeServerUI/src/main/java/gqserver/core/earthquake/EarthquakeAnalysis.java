@@ -843,11 +843,10 @@ public class EarthquakeAnalysis {
         if (cluster.getEarthquake() == null) {
             Earthquake newEarthquake = new Earthquake(cluster);
             if (!testing) {
+                getEarthquakes().add(newEarthquake);
                 if (GlobalQuakeServer.instance != null) {
                     GlobalQuakeServer.instance.getEventHandler().fireEvent(new QuakeCreateEvent(newEarthquake));
                 }
-
-                getEarthquakes().add(newEarthquake);
             }
             cluster.setEarthquake(newEarthquake);
         } else {
@@ -866,7 +865,7 @@ public class EarthquakeAnalysis {
         Earthquake earthquake = cluster.getEarthquake();
 
         if(!testing && earthquake != null){
-            earthquake.uppdateRegion();
+            earthquake.updateRegion();
         }
     }
 

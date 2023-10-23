@@ -29,7 +29,7 @@ public class Earthquake implements Regional, Warnable {
 		this.lastUpdate = System.currentTimeMillis();
 	}
 
-	public void uppdateRegion(){
+	public void updateRegion(){
 		regionUpdater.updateRegion();
 	}
 
