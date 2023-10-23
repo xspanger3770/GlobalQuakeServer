@@ -1,6 +1,5 @@
 package gqserver.core;
 
-import gqserver.core.alert.AlertManager;
 import gqserver.core.earthquake.ClusterAnalysis;
 import gqserver.core.earthquake.EarthquakeAnalysis;
 import gqserver.core.archive.EarthquakeArchive;
@@ -16,7 +15,6 @@ public class GlobalQuakeServer {
 	private final StationDatabaseManager stationDatabaseManager;
 	private final ClusterAnalysis clusterAnalysis;
 	private final EarthquakeAnalysis earthquakeAnalysis;
-	private final AlertManager alertManager;
 	private final EarthquakeArchive archive;
 
 	private final GlobalQuakeEventHandler eventHandler;
@@ -38,7 +36,6 @@ public class GlobalQuakeServer {
 		earthquakeAnalysis = new EarthquakeAnalysis();
 		clusterAnalysis = new ClusterAnalysis();
 
-		alertManager = new AlertManager();
 		archive = new EarthquakeArchive().loadArchive();
 
 		globalQuakeRuntime = new GlobalQuakeRuntime();
@@ -76,10 +73,6 @@ public class GlobalQuakeServer {
 
 	public GlobalStationManager getStationManager() {
 		return globalStationManager;
-	}
-
-	public AlertManager getAlertManager() {
-		return alertManager;
 	}
 
 	public GlobalQuakeRuntime getGlobalQuakeRuntime() {

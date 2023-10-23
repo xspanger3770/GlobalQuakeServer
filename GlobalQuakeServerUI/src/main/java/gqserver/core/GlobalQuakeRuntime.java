@@ -61,7 +61,6 @@ public class GlobalQuakeRuntime {
             try {
                 long a = System.currentTimeMillis();
                 GlobalQuakeServer.instance.getClusterAnalysis().run();
-                GlobalQuakeServer.instance.getAlertManager().tick();
                 clusterAnalysisT = System.currentTimeMillis() - a;
             } catch (Exception e) {
                 Logger.error("Exception occured in cluster analysis loop");
