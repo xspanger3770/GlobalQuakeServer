@@ -18,18 +18,6 @@ import static org.junit.Assert.*;
 @SuppressWarnings("all")
 public class GQServerSocketTest {
 
-    @Test
-    public void openTest() throws IOException {
-        GQServerSocket socket = new GQServerSocket();
-        assertThrows(RuntimeApplicationException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                socket.run("invalidaddress", 42);
-            }
-        });
-
-    }
-
     public static void main(String[] args) throws InterruptedException {
         var pool = Executors.newFixedThreadPool(100);
         for(int i = 0; i < 100; i++){

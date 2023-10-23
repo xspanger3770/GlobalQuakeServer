@@ -324,6 +324,11 @@ public final class Settings {
 					properties.setProperty(field.getName(), value);
 				}
 			}
+
+			if(!optionsFile.getParentFile().exists()){
+				optionsFile.getParentFile().mkdirs();
+			}
+
 			properties.store(new FileOutputStream(optionsFile), "Fun fact: I've never felt an earthquake in my life");
 		} catch (IOException e) {
 			Main.getErrorHandler().handleException(e);
