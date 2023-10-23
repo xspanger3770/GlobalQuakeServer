@@ -4,6 +4,7 @@ import gqserver.events.specific.*;
 
 public interface GlobalQuakeEventListener {
 
+    @SuppressWarnings("EmptyMethod")
     void onClusterCreate(ClusterCreateEvent event);
 
     void onQuakeCreate(QuakeCreateEvent event);
