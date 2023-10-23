@@ -7,7 +7,6 @@ import gqserver.exception.ApplicationErrorHandler;
 import gqserver.exception.FatalIOException;
 import gqserver.geo.taup.TauPTravelTimeCalculator;
 import gqserver.intensity.IntensityTable;
-import gqserver.intensity.ShakeMap;
 import gqserver.regions.Regions;
 import gqserver.training.EarthquakeAnalysisTraining;
 import gqserver.ui.server.DatabaseMonitorFrame;
@@ -62,16 +61,13 @@ public class Main {
         });
     }
 
-    private static final double PHASES = 7.0;
+    private static final double PHASES = 6.0;
     private static int phase = 0;
 
     private static void initAll() throws Exception {
         databaseMonitorFrame.getMainProgressBar().setString("Loading regions...");
         databaseMonitorFrame.getMainProgressBar().setValue((int) ((phase++ / PHASES) * 100.0));
         Regions.init();
-        databaseMonitorFrame.getMainProgressBar().setString("Loading shakemap...");
-        databaseMonitorFrame.getMainProgressBar().setValue((int) ((phase++ / PHASES) * 100.0));
-        ShakeMap.init();
         databaseMonitorFrame.getMainProgressBar().setString("Filling up intensity table...");
         databaseMonitorFrame.getMainProgressBar().setValue((int) ((phase++ / PHASES) * 100.0));
         IntensityTable.init();

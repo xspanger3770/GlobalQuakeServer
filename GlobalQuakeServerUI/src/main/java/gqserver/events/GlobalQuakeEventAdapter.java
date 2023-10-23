@@ -21,18 +21,7 @@ public class GlobalQuakeEventAdapter implements GlobalQuakeEventListener{
     }
 
     @Override
-    public void onWarningIssued(AlertIssuedEvent event) {
-
-    }
-
-    @Override
     public void onQuakeRemove(QuakeRemoveEvent quakeRemoveEvent) {
-
-    }
-
-    @SuppressWarnings("unused")
-    @Override
-    public void onShakemapCreated(ShakeMapCreatedEvent shakeMapCreatedEvent) {
 
     }
 

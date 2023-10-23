@@ -18,7 +18,7 @@ public class ServerStatusPanel extends JPanel {
     private JTextField addressField;
     private JTextField portField;
 
-    public ServerStatusPanel(DatabaseMonitorFrame databaseMonitorFrame) {
+    public ServerStatusPanel() {
         setLayout(new BorderLayout());
 
         add(createTopPanel(), BorderLayout.NORTH);
@@ -123,9 +123,4 @@ public class ServerStatusPanel extends JPanel {
         return JOptionPane.showConfirmDialog(this, s, "Confirmation", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
-    private JPanel wrap(JPanel target) {
-        JPanel panel = new JPanel();
-        panel.add(target);
-        return panel;
-    }
 }

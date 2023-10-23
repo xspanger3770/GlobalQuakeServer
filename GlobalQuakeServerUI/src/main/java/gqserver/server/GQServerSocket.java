@@ -5,7 +5,6 @@ import gqserver.api.ServerClient;
 import gqserver.api.packets.system.HandshakePacket;
 import gqserver.api.packets.system.TerminationPacket;
 import gqserver.core.GlobalQuakeServer;
-import gqserver.core.analysis.Log;
 import gqserver.events.specific.ClientJoinedEvent;
 import gqserver.events.specific.ClientLeftEvent;
 import gqserver.events.specific.ServerStatusChangedEvent;

@@ -326,6 +326,7 @@ public final class Settings {
 			}
 
 			if(!optionsFile.getParentFile().exists()){
+				//noinspection ResultOfMethodCallIgnored
 				optionsFile.getParentFile().mkdirs();
 			}
 

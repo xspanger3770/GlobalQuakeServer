@@ -11,12 +11,7 @@ public interface GlobalQuakeEventListener {
     @SuppressWarnings("unused")
     void onQuakeUpdate(QuakeUpdateEvent event);
 
-    void onWarningIssued(AlertIssuedEvent event);
-
     void onQuakeRemove(QuakeRemoveEvent quakeRemoveEvent);
-
-    @SuppressWarnings("unused")
-    void onShakemapCreated(ShakeMapCreatedEvent shakeMapCreatedEvent);
 
     void onServerStatusChanged(ServerStatusChangedEvent serverStatusChangedEvent);
 

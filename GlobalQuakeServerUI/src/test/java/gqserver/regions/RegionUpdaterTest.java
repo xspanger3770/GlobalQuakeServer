@@ -1,6 +1,7 @@
 package gqserver.regions;
 
 import gqserver.core.earthquake.ArchivedQuake;
+import gqserver.core.earthquake.data.Cluster;
 import gqserver.core.earthquake.data.Earthquake;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public class RegionUpdaterTest {
 
     @Test
     public void testEarthquakeRegion(){
-        Earthquake earthquake = new Earthquake(null);
+        Earthquake earthquake = new Earthquake(new Cluster(0));
         assertNotNull(earthquake.getRegion());
     }
 

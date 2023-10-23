@@ -7,6 +7,4 @@ public abstract class Packet implements Serializable {
 
     public void onServerReceive(ServerClient serverClient) throws IOException {}
 
-    public void onClientReceive() {}
-
 }

@@ -179,7 +179,8 @@ public class SeedlinkNetworksReader {
         }
     }
 
-    public void stop() {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+	public void stop() {
 		if(seedlinkReaderService != null) {
 			System.err.println("INT SDL");
 			seedlinkReaderService.shutdownNow();

@@ -26,7 +26,6 @@ public class StatusTab extends JPanel {
         setLayout(new GridLayout(4,1));
 
         long maxMem = Runtime.getRuntime().maxMemory();
-        long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
         clientsProgressBar = new JProgressBar(JProgressBar.HORIZONTAL,0, GQServerSocket.MAX_CLIENTS);
         clientsProgressBar.setStringPainted(true);

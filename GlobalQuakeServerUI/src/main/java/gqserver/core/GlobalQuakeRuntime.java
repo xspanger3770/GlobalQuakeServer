@@ -81,9 +81,8 @@ public class GlobalQuakeRuntime {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void stop() {
-
-        System.err.println("INT OTH");
         execAnalysis.shutdownNow();
         execQuake.shutdownNow();
         execClusters.shutdownNow();
@@ -97,8 +96,5 @@ public class GlobalQuakeRuntime {
         } catch (InterruptedException e) {
             Logger.error(e);
         }
-
-
-        System.err.println("INT OTH DONE");
     }
 }
