@@ -18,8 +18,8 @@ public class ServerClient {
     private final Socket socket;
     private final int id;
 
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
+    private final ObjectInputStream inputStream;
+    private final ObjectOutputStream outputStream;
 
     private final long joinTime;
     private long lastHeartbeat;
@@ -30,25 +30,20 @@ public class ServerClient {
 
     private ServerClientConfig clientConfig;
 
-    public ServerClient(Socket socket) {
+    public ServerClient(Socket socket) throws IOException {
         this.socket = socket;
+        this.inputStream = new ObjectInputStream(socket.getInputStream());
+        this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         this.id = nextID.getAndIncrement();
         this.joinTime = System.currentTimeMillis();
         this.lastHeartbeat = joinTime;
     }
 
-    private ObjectInputStream getInputStream() throws IOException {
-        if(inputStream == null) {
-            inputStream = new ObjectInputStream(socket.getInputStream());
-        }
-
+    private ObjectInputStream getInputStream() {
         return inputStream;
     }
 
-    private ObjectOutputStream getOutputStream() throws IOException {
-        if(outputStream == null) {
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
-        }
+    private ObjectOutputStream getOutputStream() {
 
         return outputStream;
     }
@@ -122,5 +117,9 @@ public class ServerClient {
 
     public long getSentPackets() {
         return sentPackets;
+    }
+
+    public void flush() throws IOException {
+        getOutputStream().flush();
     }
 }

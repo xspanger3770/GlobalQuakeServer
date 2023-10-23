@@ -5,6 +5,7 @@ import gqserver.api.ServerClient;
 import gqserver.api.packets.system.HandshakePacket;
 import gqserver.api.packets.system.TerminationPacket;
 import gqserver.core.GlobalQuakeServer;
+import gqserver.core.analysis.Log;
 import gqserver.events.specific.ClientJoinedEvent;
 import gqserver.events.specific.ClientLeftEvent;
 import gqserver.events.specific.ServerStatusChangedEvent;
@@ -86,16 +87,18 @@ public class GQServerSocket {
         clients.removeAll(toRemove);
     }
 
-    private void handshake(ServerClient client) throws IOException{
+    private void handshake(ServerClient client) throws IOException {
         try {
             Packet packet = client.readPacket();
-            if(packet instanceof HandshakePacket handshakePacket){
-                if(handshakePacket.getCompatVersion() != COMPATIBILITY_VERSION){
+            if (packet instanceof HandshakePacket handshakePacket) {
+                if (handshakePacket.getCompatVersion() != COMPATIBILITY_VERSION) {
                     client.sendPacket(new TerminationPacket("Your client version is not compatible with the server!"));
                     throw new InvalidPacketException("Client's version is not compatible %d != %d"
                             .formatted(handshakePacket.getCompatVersion(), COMPATIBILITY_VERSION));
                 }
-            }else {
+
+                client.setClientConfig(handshakePacket.getClientConfig());
+            } else {
                 throw new InvalidPacketException("Received packet is not handshake!");
             }
 
@@ -118,7 +121,7 @@ public class GQServerSocket {
 
     private void onClose() {
         clients.clear();
-        if(!clientsWatchdog.isShutdown()){
+        if (!clientsWatchdog.isShutdown()) {
             clientsWatchdog.shutdown();
         }
         setStatus(SocketStatus.IDLE);
@@ -126,7 +129,7 @@ public class GQServerSocket {
 
     public void setStatus(SocketStatus status) {
         this.status = status;
-        if(GlobalQuakeServer.instance != null){
+        if (GlobalQuakeServer.instance != null) {
             GlobalQuakeServer.instance.getEventHandler().fireEvent(new ServerStatusChangedEvent(status));
         }
     }
@@ -136,7 +139,19 @@ public class GQServerSocket {
     }
 
     public void stop() throws IOException {
-        if(lastSocket != null) {
+        for (ServerClient client : clients) {
+            try {
+                client.sendPacket(new TerminationPacket("Server closed by operator"));
+                client.flush();
+                client.destroy();
+            } catch (Exception e) {
+                Logger.error(e);
+            }
+        }
+
+        clients.clear();
+
+        if (lastSocket != null) {
             lastSocket.close();
         }
     }
@@ -149,12 +164,13 @@ public class GQServerSocket {
                 Logger.info("A new client is joining...");
                 socket.setSoTimeout(HANDSHAKE_TIMEOUT);
                 handshakeService.submit(() -> {
-                    ServerClient client = new ServerClient(socket);
-                    Logger.info("Performing handshake for client #%d".formatted(client.getID()));
+                    ServerClient client;
                     try {
+                        client = new ServerClient(socket);
+                        Logger.info("Performing handshake for client #%d".formatted(client.getID()));
                         handshake(client);
                     } catch (IOException e) {
-                        Logger.error("Failure when accepting client #%d".formatted(client.getID()));
+                        Logger.error("Failure when accepting client!");
                         Logger.error(e);
                     }
                 });
