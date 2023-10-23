@@ -70,7 +70,7 @@ public class ServerClient {
         return clientConfig;
     }
 
-    public void sendPacket(Packet packet) throws IOException{
+    public synchronized void sendPacket(Packet packet) throws IOException{
         getOutputStream().writeObject(packet);
         sentPackets++;
     }
