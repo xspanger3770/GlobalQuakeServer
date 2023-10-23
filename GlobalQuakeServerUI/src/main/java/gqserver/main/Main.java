@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.Objects;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -40,29 +41,25 @@ public class Main {
 
     public static void main(String[] args) {
         initErrorHandler();
+        if (!MAIN_FOLDER.exists()) {
+            if (!MAIN_FOLDER.mkdirs()) {
+                getErrorHandler().handleException(new FatalIOException("Unable to create main directory!", null));
+            }
+        }
 
         try {
-            if (!MAIN_FOLDER.exists()) {
-                if (!MAIN_FOLDER.mkdirs()) {
-                    getErrorHandler().handleException(new FatalIOException("Unable to create main directory!", null));
-                }
-            }
-
             startDatabaseManager();
-
-            new Thread("Init Thread") {
-                @Override
-                public void run() {
-                    try {
-                        initAll();
-                    } catch (Exception e) {
-                        getErrorHandler().handleException(e);
-                    }
-                }
-            }.start();
-        } catch (Exception e) {
+        } catch (FatalIOException e) {
             getErrorHandler().handleException(e);
         }
+
+        Executors.newSingleThreadExecutor().submit(() -> {
+            try {
+                initAll();
+            } catch (Exception e) {
+                getErrorHandler().handleException(e);
+            }
+        });
     }
 
     private static final double PHASES = 7.0;
