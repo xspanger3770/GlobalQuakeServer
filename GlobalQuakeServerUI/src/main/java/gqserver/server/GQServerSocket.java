@@ -189,4 +189,8 @@ public class GQServerSocket {
     public List<ServerClient> getClients() {
         return clients;
     }
+
+    public DataService getDataService() {
+        return dataService;
+    }
 }

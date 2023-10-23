@@ -4,6 +4,9 @@ import gqserver.api.Packet;
 import gqserver.api.ServerClient;
 import gqserver.api.data.EarthquakeInfo;
 import gqserver.api.data.HypocenterData;
+import gqserver.api.packets.earthquake.EarthquakeCheckPacket;
+import gqserver.api.packets.earthquake.EarthquakeRequestPacket;
+import gqserver.api.packets.earthquake.EarthquakesRequestPacket;
 import gqserver.api.packets.earthquake.HypocenterDataPacket;
 import gqserver.core.GlobalQuakeServer;
 import gqserver.core.earthquake.data.Earthquake;
@@ -45,7 +48,7 @@ public class DataService {
                     quakesWriteLock.unlock();
                 }
 
-                broadcast(getEartquakeReceivingClients(), createQuakePacket(earthquake));
+                broadcast(getEarthquakeReceivingClients(), createQuakePacket(earthquake));
             }
 
             @Override
@@ -64,7 +67,7 @@ public class DataService {
                     quakesWriteLock.unlock();
                 }
 
-                broadcast(getEartquakeReceivingClients(), createQuakePacket(null));
+                broadcast(getEarthquakeReceivingClients(), new EarthquakeCheckPacket(new EarthquakeInfo(event.earthquake().getUuid(), EarthquakeInfo.REMOVED)));
             }
 
             @Override
@@ -86,16 +89,12 @@ public class DataService {
                     quakesWriteLock.unlock();
                 }
 
-                broadcast(getEartquakeReceivingClients(), createQuakePacket(earthquake));
+                broadcast(getEarthquakeReceivingClients(), createQuakePacket(earthquake));
             }
         });
     }
 
     private Packet createQuakePacket(Earthquake earthquake) {
-        if(earthquake == null){
-            return new HypocenterDataPacket(null);
-        }
-
         return new HypocenterDataPacket(new HypocenterData(
                earthquake.getUuid(),earthquake.getRevisionID(), earthquake.getLat(), earthquake.getLon(),
                 earthquake.getDepth(),earthquake.getOrigin(), earthquake.getMag())
@@ -112,7 +111,7 @@ public class DataService {
         });
     }
 
-    private List<ServerClient> getEartquakeReceivingClients(){
+    private List<ServerClient> getEarthquakeReceivingClients(){
         return getClients().stream().filter(serverClient -> serverClient.getClientConfig().earthquakeData()).toList();
     }
 
@@ -120,4 +119,35 @@ public class DataService {
         return GlobalQuakeServer.instance.getServerSocket().getClients();
     }
 
+    public void processPacket(ServerClient client, Packet packet) {
+        try {
+            if (packet instanceof EarthquakesRequestPacket) {
+                processEarthquakesRequest(client);
+            } else if (packet instanceof EarthquakeRequestPacket earthquakeRequestPacket) {
+                processEarthquakeRequest(client, earthquakeRequestPacket);
+            }
+        }catch(IOException e){
+            Logger.error(e);
+        }
+    }
+
+    private void processEarthquakeRequest(ServerClient client, EarthquakeRequestPacket earthquakeRequestPacket) throws IOException {
+        for(Earthquake earthquake : GlobalQuakeServer.instance.getEarthquakeAnalysis().getEarthquakes()){
+            if(earthquake.getUuid().equals(earthquakeRequestPacket.getUuid())){
+                client.sendPacket(createQuakePacket(earthquake));
+                return;
+            }
+        }
+    }
+
+    private void processEarthquakesRequest(ServerClient client) throws IOException {
+        quakesReadLock.lock();
+        try {
+            for (EarthquakeInfo info : currentEarthquakes) {
+                client.sendPacket(new EarthquakeCheckPacket(info));
+            }
+        } finally {
+            quakesReadLock.unlock();
+        }
+    }
 }
