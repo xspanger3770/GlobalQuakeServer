@@ -5,10 +5,8 @@ import globalquake.core.earthquake.data.Hypocenter;
 import globalquake.core.earthquake.interval.DepthConfidenceInterval;
 import globalquake.core.earthquake.interval.PolygonConfidenceInterval;
 import globalquake.core.earthquake.quality.Quality;
-import globalquake.core.events.GlobalQuakeEventAdapter;
-import globalquake.core.events.specific.QuakeCreateEvent;
-import globalquake.core.events.specific.QuakeRemoveEvent;
-import globalquake.core.events.specific.QuakeUpdateEvent;
+import globalquake.core.events.GlobalQuakeEventListener;
+import globalquake.core.events.specific.*;
 import gqserver.api.Packet;
 import gqserver.api.ServerClient;
 import gqserver.api.data.earthquake.EarthquakeInfo;
@@ -24,15 +22,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class DataService {
+public class DataService implements GlobalQuakeEventListener {
 
     private final ReadWriteLock quakesRWLock = new ReentrantReadWriteLock();
 
@@ -44,78 +39,78 @@ public class DataService {
     public DataService() {
         currentEarthquakes = new ArrayList<>();
 
-        GlobalQuakeServer.instance.getEventHandler().registerEventListener(new GlobalQuakeEventAdapter(){
-            @Override
-            public void onQuakeCreate(QuakeCreateEvent event) {
-                Earthquake earthquake = event.earthquake();
+        GlobalQuakeServer.instance.getEventHandler().registerEventListener(this);
 
-                quakesWriteLock.lock();
-                try{
-                    currentEarthquakes.add(new EarthquakeInfo(earthquake.getUuid(), earthquake.getRevisionID()));
-                } finally {
-                    quakesWriteLock.unlock();
-                }
-
-                broadcast(getEarthquakeReceivingClients(), createQuakePacket(earthquake));
-            }
-
-            @Override
-            public void onQuakeRemove(QuakeRemoveEvent event) {
-                quakesWriteLock.lock();
-                try{
-                    Earthquake earthquake = event.earthquake();
-                    for (Iterator<EarthquakeInfo> iterator = currentEarthquakes.iterator(); iterator.hasNext(); ) {
-                        EarthquakeInfo info = iterator.next();
-                        if (info.uuid().equals(earthquake.getUuid())) {
-                            iterator.remove();
-                            break;
-                        }
-                    }
-                } finally {
-                    quakesWriteLock.unlock();
-                }
-
-                broadcast(getEarthquakeReceivingClients(), new EarthquakeCheckPacket(new EarthquakeInfo(event.earthquake().getUuid(), EarthquakeInfo.REMOVED)));
-            }
-
-            @Override
-            public void onQuakeUpdate(QuakeUpdateEvent event) {
-                quakesWriteLock.lock();
-                Earthquake earthquake = event.earthquake();
-
-                try{
-                    for (Iterator<EarthquakeInfo> iterator = currentEarthquakes.iterator(); iterator.hasNext(); ) {
-                        EarthquakeInfo info = iterator.next();
-                        if (info.uuid().equals(earthquake.getUuid())) {
-                            iterator.remove();
-                            break;
-                        }
-                    }
-
-                    currentEarthquakes.add(new EarthquakeInfo(earthquake.getUuid(), earthquake.getRevisionID()));
-                } finally {
-                    quakesWriteLock.unlock();
-                }
-
-                broadcast(getEarthquakeReceivingClients(), createQuakePacket(earthquake));
-            }
-        });
-
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::checkQuakes, 0, 1, TimeUnit.MINUTES);
     }
 
-    private void checkQuakes() {
+    @Override
+    public void onClusterCreate(ClusterCreateEvent event) {
+
+    }
+
+    @Override
+    public void onQuakeCreate(QuakeCreateEvent event) {
+        Earthquake earthquake = event.earthquake();
+
         quakesWriteLock.lock();
         try{
-            currentEarthquakes.removeIf(info -> !existsQuake(info.uuid()));
+            currentEarthquakes.add(new EarthquakeInfo(earthquake.getUuid(), earthquake.getRevisionID()));
         } finally {
             quakesWriteLock.unlock();
         }
+
+        broadcast(getEarthquakeReceivingClients(), createQuakePacket(earthquake));
     }
 
-    private boolean existsQuake(UUID uuid) {
-        return GlobalQuakeServer.instance.getEarthquakeAnalysis().getEarthquakes().stream()
-                .anyMatch(earthquake -> earthquake.getUuid().equals(uuid));
+    @Override
+    public void onQuakeRemove(QuakeRemoveEvent event) {
+        quakesWriteLock.lock();
+        try{
+            Earthquake earthquake = event.earthquake();
+            for (Iterator<EarthquakeInfo> iterator = currentEarthquakes.iterator(); iterator.hasNext(); ) {
+                EarthquakeInfo info = iterator.next();
+                if (info.uuid().equals(earthquake.getUuid())) {
+                    iterator.remove();
+                    break;
+                }
+            }
+        } finally {
+            quakesWriteLock.unlock();
+        }
+
+        broadcast(getEarthquakeReceivingClients(), new EarthquakeCheckPacket(new EarthquakeInfo(event.earthquake().getUuid(), EarthquakeInfo.REMOVED)));
+    }
+
+    @Override
+    public void onQuakeUpdate(QuakeUpdateEvent event) {
+        quakesWriteLock.lock();
+        Earthquake earthquake = event.earthquake();
+
+        try{
+            for (Iterator<EarthquakeInfo> iterator = currentEarthquakes.iterator(); iterator.hasNext(); ) {
+                EarthquakeInfo info = iterator.next();
+                if (info.uuid().equals(earthquake.getUuid())) {
+                    iterator.remove();
+                    break;
+                }
+            }
+
+            currentEarthquakes.add(new EarthquakeInfo(earthquake.getUuid(), earthquake.getRevisionID()));
+        } finally {
+            quakesWriteLock.unlock();
+        }
+
+        broadcast(getEarthquakeReceivingClients(), createQuakePacket(earthquake));
+    }
+
+    @Override
+    public void onQuakeArchive(QuakeArchiveEvent event) {
+        quakesWriteLock.lock();
+        try{
+            currentEarthquakes.removeIf(earthquakeInfo -> earthquakeInfo.uuid().equals(event.earthquake().getUuid()));
+        } finally {
+            quakesWriteLock.unlock();
+        }
     }
 
     private Packet createQuakePacket(Earthquake earthquake) {
