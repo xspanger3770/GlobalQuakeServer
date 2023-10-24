@@ -1,7 +1,5 @@
 package gqserver.events.specific;
 
-import globalquake.core.events.GlobalQuakeEventListener;
-import globalquake.core.events.specific.GlobalQuakeEvent;
 import gqserver.events.GlobalQuakeServerEvent;
 import gqserver.events.GlobalQuakeServerEventListener;
 import gqserver.server.SocketStatus;

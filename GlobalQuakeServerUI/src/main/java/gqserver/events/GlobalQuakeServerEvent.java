@@ -1,5 +1,5 @@
 package gqserver.events;
 
 public interface GlobalQuakeServerEvent {
-    public void run(GlobalQuakeServerEventListener eventListener);
+    void run(GlobalQuakeServerEventListener eventListener);
 }

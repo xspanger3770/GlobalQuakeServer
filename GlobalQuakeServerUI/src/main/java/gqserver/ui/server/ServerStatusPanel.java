@@ -1,6 +1,5 @@
 package gqserver.ui.server;
 
-import globalquake.core.events.GlobalQuakeEventAdapter;
 import globalquake.core.exception.RuntimeApplicationException;
 import gqserver.events.GlobalQuakeServerEventListener;
 import gqserver.events.specific.ServerStatusChangedEvent;

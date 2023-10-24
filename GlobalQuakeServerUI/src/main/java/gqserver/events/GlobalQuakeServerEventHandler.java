@@ -1,7 +1,5 @@
 package gqserver.events;
 
-import globalquake.core.events.GlobalQuakeEventListener;
-import globalquake.core.events.specific.GlobalQuakeEvent;
 import org.tinylog.Logger;
 
 import java.util.Queue;
