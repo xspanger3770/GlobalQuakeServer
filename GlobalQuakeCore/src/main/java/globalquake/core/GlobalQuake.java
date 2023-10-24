@@ -12,22 +12,21 @@ import java.io.File;
 
 public class GlobalQuake {
 
-	private final GlobalQuakeRuntime globalQuakeRuntime;
-	private final SeedlinkNetworksReader seedlinkNetworksReader;
-	private final StationDatabaseManager stationDatabaseManager;
-	private final ClusterAnalysis clusterAnalysis;
-	private final EarthquakeAnalysis earthquakeAnalysis;
-	private final EarthquakeArchive archive;
+	protected GlobalQuakeRuntime globalQuakeRuntime;
+	protected SeedlinkNetworksReader seedlinkNetworksReader;
+	protected StationDatabaseManager stationDatabaseManager;
+	protected ClusterAnalysis clusterAnalysis;
+	protected EarthquakeAnalysis earthquakeAnalysis;
+	protected EarthquakeArchive archive;
 
-	private final GlobalQuakeEventHandler eventHandler;
+	protected GlobalQuakeEventHandler eventHandler;
 
 	public static GlobalQuake instance;
 
-	private final GlobalStationManager globalStationManager;
+	protected GlobalStationManager globalStationManager;
 
-	private final ApplicationErrorHandler errorHandler;
+	protected ApplicationErrorHandler errorHandler;
 	private final File mainFolder;
-
 
 	public GlobalQuake(StationDatabaseManager stationDatabaseManager,
 					   ApplicationErrorHandler errorHandler,
