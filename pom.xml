@@ -10,7 +10,8 @@
 	<modules>
 		<module>GlobalQuakeServerUI</module>
 		<module>GlobalQuakeAPI</module>
-	</modules>
+        <module>GlobalQuakeCore</module>
+    </modules>
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>

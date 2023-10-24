@@ -1,4 +1,4 @@
-package globalquake.earthquake.quality;
+package globalquake.core.earthquake.quality;
 
 public final class QualityCriteria {
 
