@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -92,6 +95,22 @@ public class DataService {
                 broadcast(getEarthquakeReceivingClients(), createQuakePacket(earthquake));
             }
         });
+
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::checkQuakes, 0, 1, TimeUnit.MINUTES);
+    }
+
+    private void checkQuakes() {
+        quakesWriteLock.lock();
+        try{
+            currentEarthquakes.removeIf(info -> !existsQuake(info.uuid()));
+        } finally {
+            quakesWriteLock.unlock();
+        }
+    }
+
+    private boolean existsQuake(UUID uuid) {
+        return GlobalQuakeServer.instance.getEarthquakeAnalysis().getEarthquakes().stream()
+                .anyMatch(earthquake -> earthquake.getUuid().equals(uuid));
     }
 
     private Packet createQuakePacket(Earthquake earthquake) {
