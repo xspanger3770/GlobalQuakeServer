@@ -1,6 +1,6 @@
 package gqserver.ui.server.table.model;
 
-import gqserver.database.StationSource;
+import globalquake.core.database.StationSource;
 import gqserver.ui.server.table.Column;
 import gqserver.ui.server.table.LastUpdateRenderer;
 import gqserver.ui.server.table.ProgressBarRenderer;

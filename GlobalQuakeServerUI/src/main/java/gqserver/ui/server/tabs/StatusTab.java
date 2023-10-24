@@ -1,12 +1,12 @@
 package gqserver.ui.server.tabs;
 
-import gqserver.core.GlobalQuakeServer;
-import gqserver.database.SeedlinkNetwork;
-import gqserver.database.SeedlinkStatus;
-import gqserver.events.GlobalQuakeEventAdapter;
+import globalquake.core.database.SeedlinkNetwork;
+import globalquake.core.database.SeedlinkStatus;
+import gqserver.events.GlobalQuakeServerEventListener;
 import gqserver.events.specific.ClientJoinedEvent;
 import gqserver.events.specific.ClientLeftEvent;
 import gqserver.server.GQServerSocket;
+import gqserver.server.GlobalQuakeServer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,7 +46,7 @@ public class StatusTab extends JPanel {
         updateRamProgressBar();
         updateClientsProgressBar();
 
-        GlobalQuakeServer.instance.getEventHandler().registerEventListener(new GlobalQuakeEventAdapter(){
+        GlobalQuakeServer.instance.getServerEventHandler().registerEventListener(new GlobalQuakeServerEventListener(){
             @Override
             public void onClientJoin(ClientJoinedEvent clientJoinedEvent) {
                 updateClientsProgressBar();

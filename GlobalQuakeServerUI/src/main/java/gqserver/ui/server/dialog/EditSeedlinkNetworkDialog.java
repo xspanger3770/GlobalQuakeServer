@@ -1,8 +1,8 @@
 package gqserver.ui.server.dialog;
 
-import gqserver.database.SeedlinkNetwork;
-import gqserver.database.StationDatabaseManager;
-import gqserver.exception.RuntimeApplicationException;
+import globalquake.core.database.SeedlinkNetwork;
+import globalquake.core.database.StationDatabaseManager;
+import globalquake.core.exception.RuntimeApplicationException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

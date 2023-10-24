@@ -1,10 +1,10 @@
 package gqserver.ui.globe.feature;
 
+import globalquake.core.Settings;
+import globalquake.utils.monitorable.Monitorable;
 import gqserver.ui.globe.GlobeRenderer;
 import gqserver.ui.globe.Point2D;
 import gqserver.ui.globe.RenderProperties;
-import gqserver.ui.settings.Settings;
-import gqserver.utils.monitorable.Monitorable;
 
 import java.awt.*;
 import java.util.Arrays;

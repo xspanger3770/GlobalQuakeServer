@@ -1,6 +1,7 @@
 package gqserver.ui.server.table;
 
-import gqserver.ui.settings.Settings;
+
+import globalquake.core.Settings;
 
 import java.time.LocalDateTime;
 

@@ -4,13 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.morce.GlobalQuake</groupId>
+        <groupId>xspanger.GlobalQuake</groupId>
         <artifactId>GlobalQuakeServer</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.1.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.example</groupId>
     <artifactId>GlobalQuakeServerUI</artifactId>
+    <version>0.1.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -56,11 +57,7 @@
             <version>3.1</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.json/json -->
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20230227</version>
-        </dependency>
+
         <dependency>
             <groupId>org.tinylog</groupId>
             <artifactId>tinylog-api</artifactId>
@@ -78,9 +75,15 @@
             <version>4.1.1</version>
         </dependency>
         <dependency>
-            <groupId>org.example</groupId>
+            <groupId>xspanger.GlobalQuake</groupId>
             <artifactId>GlobalQuakeAPI</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>xspanger.GlobalQuake</groupId>
+            <artifactId>GlobalQuakeCore</artifactId>
+            <version>0.10.0</version>
             <scope>compile</scope>
         </dependency>
 

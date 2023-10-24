@@ -1,12 +1,13 @@
 package gqserver.events.specific;
 
-import gqserver.events.GlobalQuakeEventListener;
+import gqserver.events.GlobalQuakeServerEvent;
+import gqserver.events.GlobalQuakeServerEventListener;
 import gqserver.server.SocketStatus;
 
-public record ServerStatusChangedEvent(SocketStatus status) implements GlobalQuakeEvent {
+public record ServerStatusChangedEvent(SocketStatus status) implements GlobalQuakeServerEvent {
 
     @Override
-    public void run(GlobalQuakeEventListener eventListener) {
+    public void run(GlobalQuakeServerEventListener eventListener) {
         eventListener.onServerStatusChanged(this);
     }
 }

@@ -1,6 +1,14 @@
 package gqserver.server;
 
-import globalquake.earthquake.quality.Quality;
+import globalquake.core.earthquake.data.Earthquake;
+import globalquake.core.earthquake.data.Hypocenter;
+import globalquake.core.earthquake.interval.DepthConfidenceInterval;
+import globalquake.core.earthquake.interval.PolygonConfidenceInterval;
+import globalquake.core.earthquake.quality.Quality;
+import globalquake.core.events.GlobalQuakeEventAdapter;
+import globalquake.core.events.specific.QuakeCreateEvent;
+import globalquake.core.events.specific.QuakeRemoveEvent;
+import globalquake.core.events.specific.QuakeUpdateEvent;
 import gqserver.api.Packet;
 import gqserver.api.ServerClient;
 import gqserver.api.data.earthquake.EarthquakeInfo;
@@ -10,15 +18,6 @@ import gqserver.api.packets.earthquake.EarthquakeCheckPacket;
 import gqserver.api.packets.earthquake.EarthquakeRequestPacket;
 import gqserver.api.packets.earthquake.EarthquakesRequestPacket;
 import gqserver.api.packets.earthquake.HypocenterDataPacket;
-import gqserver.core.GlobalQuakeServer;
-import gqserver.core.earthquake.data.Earthquake;
-import gqserver.core.earthquake.data.Hypocenter;
-import gqserver.core.earthquake.interval.DepthConfidenceInterval;
-import gqserver.core.earthquake.interval.PolygonConfidenceInterval;
-import gqserver.events.GlobalQuakeEventAdapter;
-import gqserver.events.specific.QuakeCreateEvent;
-import gqserver.events.specific.QuakeRemoveEvent;
-import gqserver.events.specific.QuakeUpdateEvent;
 import org.tinylog.Logger;
 
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package gqserver.ui.stationselect;
 
-import gqserver.database.Channel;
-import gqserver.database.Station;
+import globalquake.core.database.Channel;
+import globalquake.core.database.Station;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

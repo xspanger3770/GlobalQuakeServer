@@ -1,6 +1,6 @@
 package gqserver.ui;
 
-import gqserver.core.station.AbstractStation;
+import globalquake.core.station.AbstractStation;
 
 import javax.swing.*;
 import java.awt.*;

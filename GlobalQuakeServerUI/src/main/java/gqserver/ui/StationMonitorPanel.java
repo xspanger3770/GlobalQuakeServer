@@ -1,5 +1,17 @@
 package gqserver.ui;
 
+import globalquake.core.Settings;
+import globalquake.core.analysis.AnalysisStatus;
+import globalquake.core.analysis.BetterAnalysis;
+import globalquake.core.analysis.Event;
+import globalquake.core.analysis.Log;
+import globalquake.core.earthquake.EarthquakeAnalysis;
+import globalquake.core.earthquake.data.Earthquake;
+import globalquake.core.geo.taup.TauPTravelTimeCalculator;
+import globalquake.core.station.AbstractStation;
+import globalquake.utils.GeoUtils;
+import gqserver.server.GlobalQuakeServer;
+
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -7,19 +19,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
-
-import gqserver.core.GlobalQuakeServer;
-import gqserver.core.earthquake.data.Earthquake;
-import gqserver.core.earthquake.EarthquakeAnalysis;
-import gqserver.core.station.AbstractStation;
-import gqserver.core.analysis.Event;
-import gqserver.core.analysis.Log;
-import gqserver.core.analysis.AnalysisStatus;
-import gqserver.core.analysis.BetterAnalysis;
-import gqserver.geo.GeoUtils;
-import gqserver.geo.taup.TauPTravelTimeCalculator;
-import gqserver.training.ArtificialWaveformGenerator;
-import gqserver.ui.settings.Settings;
 
 public class StationMonitorPanel extends JPanel {
 
@@ -312,7 +311,7 @@ public class StationMonitorPanel extends JPanel {
 	}
 
 	private long getTime() {
-		return ArtificialWaveformGenerator.instance != null ? ArtificialWaveformGenerator.instance.simulationTime : System.currentTimeMillis();
+		return System.currentTimeMillis();
 	}
 
 	private double getX(long time) {

@@ -1,5 +1,7 @@
 package gqserver.ui.settings;
 
+import globalquake.core.Settings;
+
 import javax.swing.*;
 import java.awt.*;
 

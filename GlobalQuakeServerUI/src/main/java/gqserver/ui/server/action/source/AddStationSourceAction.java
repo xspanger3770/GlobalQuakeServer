@@ -1,6 +1,6 @@
 package gqserver.ui.server.action.source;
 
-import gqserver.database.StationDatabaseManager;
+import globalquake.core.database.StationDatabaseManager;
 import gqserver.ui.server.dialog.EditStationSourceDialog;
 
 import javax.swing.*;

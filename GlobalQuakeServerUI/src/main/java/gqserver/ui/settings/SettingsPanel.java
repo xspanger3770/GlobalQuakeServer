@@ -1,6 +1,7 @@
 package gqserver.ui.settings;
 
-import gqserver.exception.RuntimeApplicationException;
+
+import globalquake.core.exception.RuntimeApplicationException;
 
 import javax.swing.*;
 

@@ -1,8 +1,10 @@
 package gqserver.ui.settings;
 
-import gqserver.geo.DistanceUnit;
-import gqserver.intensity.IntensityScale;
-import gqserver.intensity.IntensityScales;
+
+import globalquake.core.Settings;
+import globalquake.core.geo.DistanceUnit;
+import globalquake.core.intensity.IntensityScale;
+import globalquake.core.intensity.IntensityScales;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

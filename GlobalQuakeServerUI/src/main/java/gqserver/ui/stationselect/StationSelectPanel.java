@@ -1,13 +1,12 @@
 package gqserver.ui.stationselect;
 
-import gqserver.database.Network;
-import gqserver.database.Station;
-import gqserver.database.StationDatabaseManager;
+import globalquake.core.Settings;
+import globalquake.core.database.Network;
+import globalquake.core.database.Station;
+import globalquake.core.database.StationDatabaseManager;
+import globalquake.utils.monitorable.MonitorableCopyOnWriteArrayList;
 import gqserver.ui.globe.GlobePanel;
 import gqserver.ui.globe.feature.RenderEntity;
-import gqserver.ui.settings.Settings;
-import gqserver.utils.monitorable.MonitorableCopyOnWriteArrayList;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

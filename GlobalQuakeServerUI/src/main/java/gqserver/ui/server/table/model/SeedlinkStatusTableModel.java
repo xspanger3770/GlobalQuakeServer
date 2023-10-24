@@ -1,6 +1,6 @@
 package gqserver.ui.server.table.model;
 
-import gqserver.database.SeedlinkNetwork;
+import globalquake.core.database.SeedlinkNetwork;
 import gqserver.ui.server.table.Column;
 import gqserver.ui.server.table.TableCellRendererAdapter;
 

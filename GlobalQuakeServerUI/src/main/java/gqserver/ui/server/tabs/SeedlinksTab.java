@@ -1,6 +1,6 @@
 package gqserver.ui.server.tabs;
 
-import gqserver.core.GlobalQuakeServer;
+import gqserver.server.GlobalQuakeServer;
 import gqserver.ui.server.table.GQTable;
 import gqserver.ui.server.table.model.SeedlinkStatusTableModel;
 
