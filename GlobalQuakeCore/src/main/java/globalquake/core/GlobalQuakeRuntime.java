@@ -38,7 +38,7 @@ public class GlobalQuakeRuntime {
                 lastAnalysis = System.currentTimeMillis() - a;
             } catch (Exception e) {
                 Logger.error("Exception occurred in station analysis");
-                GlobalQuake.instance.getErrorHandler().handleException(e);
+                GlobalQuake.getErrorHandler().handleException(e);
             }
         }, 0, 100, TimeUnit.MILLISECONDS);
 
@@ -52,7 +52,7 @@ public class GlobalQuakeRuntime {
                 lastSecond = System.currentTimeMillis() - a;
             } catch (Exception e) {
                 Logger.error("Exception occurred in 1-second loop");
-                GlobalQuake.instance.getErrorHandler().handleException(e);
+                GlobalQuake.getErrorHandler().handleException(e);
             }
         }, 0, 1, TimeUnit.SECONDS);
 
@@ -63,7 +63,7 @@ public class GlobalQuakeRuntime {
                 clusterAnalysisT = System.currentTimeMillis() - a;
             } catch (Exception e) {
                 Logger.error("Exception occurred in cluster analysis loop");
-                GlobalQuake.instance.getErrorHandler().handleException(e);
+                GlobalQuake.getErrorHandler().handleException(e);
             }
         }, 0, 500, TimeUnit.MILLISECONDS);
 
@@ -74,7 +74,7 @@ public class GlobalQuakeRuntime {
                 lastQuakesT = System.currentTimeMillis() - a;
             } catch (Exception e) {
                 Logger.error("Exception occurred in hypocenter location loop");
-                GlobalQuake.instance.getErrorHandler().handleException(e);
+                GlobalQuake.getErrorHandler().handleException(e);
             }
         }, 0, 1, TimeUnit.SECONDS);
     }

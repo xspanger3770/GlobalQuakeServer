@@ -3,7 +3,6 @@ package gqserver.server;
 import globalquake.core.GlobalQuake;
 import globalquake.core.database.StationDatabaseManager;
 import gqserver.events.GlobalQuakeServerEventHandler;
-import gqserver.main.Main;
 
 public class GlobalQuakeServer extends GlobalQuake {
 

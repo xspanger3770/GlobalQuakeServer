@@ -331,7 +331,7 @@ public final class Settings {
 
 			properties.store(new FileOutputStream(optionsFile), "Fun fact: I've never felt an earthquake in my life");
 		} catch (IOException e) {
-			GlobalQuake.instance.getErrorHandler().handleException(e);
+			GlobalQuake.getErrorHandler().handleException(e);
 		}
 
 	}

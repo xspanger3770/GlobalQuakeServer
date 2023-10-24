@@ -44,7 +44,7 @@ public class StationDatabaseManager {
 
                 Logger.info("Database load successfull");
             } catch (ClassNotFoundException | IOException e) {
-                GlobalQuake.instance.getErrorHandler().handleException(new FatalIOException("Unable to read station database!", e));
+                GlobalQuake.getErrorHandler().handleException(new FatalIOException("Unable to read station database!", e));
             }
         }
 
