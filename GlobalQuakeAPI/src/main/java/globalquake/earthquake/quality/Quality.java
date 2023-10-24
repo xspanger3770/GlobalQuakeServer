@@ -1,4 +1,4 @@
-package gqserver.core.earthquake.quality;
+package globalquake.earthquake.quality;
 
 public class Quality {
     private static final double[] THRESHOLDS_ORIGIN = {1.0, 2.5, 10.0, 30.0};

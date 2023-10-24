@@ -3,8 +3,8 @@ package gqserver.api;
 import java.io.IOException;
 import java.io.Serializable;
 
-public abstract class Packet implements Serializable {
+public interface Packet extends Serializable {
 
-    public void onServerReceive(ServerClient serverClient) throws IOException {}
+    default void onServerReceive(ServerClient serverClient) throws IOException {};
 
 }

@@ -1,17 +1,9 @@
 package gqserver.api.packets.earthquake;
 
 import gqserver.api.Packet;
-import gqserver.api.data.HypocenterData;
+import gqserver.api.data.earthquake.HypocenterData;
+import gqserver.api.data.earthquake.advanced.AdvancedHypocenterData;
 
-public class HypocenterDataPacket extends Packet {
+public record HypocenterDataPacket(HypocenterData data, AdvancedHypocenterData advancedHypocenterData) implements Packet {
 
-    private final HypocenterData data;
-
-    public HypocenterDataPacket(HypocenterData data){
-        this.data = data;
-    }
-
-    public HypocenterData getData() {
-        return data;
-    }
 }

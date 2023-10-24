@@ -1,17 +1,8 @@
 package gqserver.api.packets.earthquake;
 
 import gqserver.api.Packet;
-import gqserver.api.data.EarthquakeInfo;
+import gqserver.api.data.earthquake.EarthquakeInfo;
 
-public class EarthquakeCheckPacket extends Packet {
+public record EarthquakeCheckPacket(EarthquakeInfo info) implements Packet {
 
-    private final EarthquakeInfo info;
-
-    public EarthquakeCheckPacket(EarthquakeInfo info){
-        this.info = info;
-    }
-
-    public EarthquakeInfo getInfo() {
-        return info;
-    }
 }

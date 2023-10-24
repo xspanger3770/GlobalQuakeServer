@@ -1,6 +1,6 @@
 package gqserver.api;
 
-import gqserver.api.data.ServerClientConfig;
+import gqserver.api.data.system.ServerClientConfig;
 import gqserver.api.exception.UnknownPacketException;
 
 import java.io.IOException;

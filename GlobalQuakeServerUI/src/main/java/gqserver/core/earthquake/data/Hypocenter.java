@@ -1,8 +1,8 @@
 package gqserver.core.earthquake.data;
 
+import globalquake.earthquake.quality.Quality;
 import gqserver.core.earthquake.interval.DepthConfidenceInterval;
 import gqserver.core.earthquake.interval.PolygonConfidenceInterval;
-import gqserver.core.earthquake.quality.*;
 
 import java.util.List;
 

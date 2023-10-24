@@ -1,4 +1,4 @@
-package gqserver.api.data;
+package gqserver.api.data.earthquake;
 
 import java.io.Serializable;
 import java.util.UUID;

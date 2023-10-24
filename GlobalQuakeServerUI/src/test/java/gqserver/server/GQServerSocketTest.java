@@ -1,6 +1,6 @@
 package gqserver.server;
 
-import gqserver.api.data.ServerClientConfig;
+import gqserver.api.data.system.ServerClientConfig;
 import gqserver.api.packets.system.HandshakePacket;
 import gqserver.api.packets.system.HeartbeatPacket;
 

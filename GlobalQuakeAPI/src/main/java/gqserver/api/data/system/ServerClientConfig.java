@@ -1,4 +1,4 @@
-package gqserver.api.data;
+package gqserver.api.data.system;
 
 import java.io.Serializable;
 

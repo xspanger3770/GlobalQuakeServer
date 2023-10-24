@@ -1,15 +1,20 @@
 package gqserver.server;
 
+import globalquake.earthquake.quality.Quality;
 import gqserver.api.Packet;
 import gqserver.api.ServerClient;
-import gqserver.api.data.EarthquakeInfo;
-import gqserver.api.data.HypocenterData;
+import gqserver.api.data.earthquake.EarthquakeInfo;
+import gqserver.api.data.earthquake.HypocenterData;
+import gqserver.api.data.earthquake.advanced.*;
 import gqserver.api.packets.earthquake.EarthquakeCheckPacket;
 import gqserver.api.packets.earthquake.EarthquakeRequestPacket;
 import gqserver.api.packets.earthquake.EarthquakesRequestPacket;
 import gqserver.api.packets.earthquake.HypocenterDataPacket;
 import gqserver.core.GlobalQuakeServer;
 import gqserver.core.earthquake.data.Earthquake;
+import gqserver.core.earthquake.data.Hypocenter;
+import gqserver.core.earthquake.interval.DepthConfidenceInterval;
+import gqserver.core.earthquake.interval.PolygonConfidenceInterval;
 import gqserver.events.GlobalQuakeEventAdapter;
 import gqserver.events.specific.QuakeCreateEvent;
 import gqserver.events.specific.QuakeRemoveEvent;
@@ -26,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class DataService {
 
@@ -114,10 +120,54 @@ public class DataService {
     }
 
     private Packet createQuakePacket(Earthquake earthquake) {
-        return new HypocenterDataPacket(new HypocenterData(
-               earthquake.getUuid(),earthquake.getRevisionID(), earthquake.getLat(), earthquake.getLon(),
-                earthquake.getDepth(),earthquake.getOrigin(), earthquake.getMag())
-        );
+        return new HypocenterDataPacket(createHypocenterData(earthquake), createAdvancedHypocenterData(earthquake));
+    }
+
+    private AdvancedHypocenterData createAdvancedHypocenterData(Earthquake earthquake) {
+        Hypocenter hypocenter = earthquake.getHypocenter();
+        if(hypocenter == null || hypocenter.quality == null ||
+                hypocenter.polygonConfidenceIntervals == null || hypocenter.depthConfidenceInterval == null){
+            return null;
+        }
+
+        return new AdvancedHypocenterData(
+                createQualityData(hypocenter.quality),
+                createDepthConfidenceData(hypocenter.depthConfidenceInterval),
+                createLocationConfidenceData(hypocenter.polygonConfidenceIntervals));
+    }
+
+    private LocationConfidenceIntervalData createLocationConfidenceData(List<PolygonConfidenceInterval> intervals) {
+        List<PolygonConfidenceIntervalData> list = new ArrayList<>();
+        for(PolygonConfidenceInterval interval : intervals){
+            list.add(new PolygonConfidenceIntervalData(
+                    interval.n(),
+                    (float) interval.offset(),
+                    interval.lengths().stream().map(Double::floatValue).collect(Collectors.toList())));
+        }
+
+        return new LocationConfidenceIntervalData(list);
+    }
+
+    private DepthConfidenceIntervalData createDepthConfidenceData(DepthConfidenceInterval interval) {
+        return new DepthConfidenceIntervalData(
+                (float) interval.minDepth(),
+                (float) interval.maxDepth());
+    }
+
+    private HypocenterQualityData createQualityData(Quality quality) {
+        return new HypocenterQualityData(
+                (float) quality.getQualityOrigin().getValue(),
+                (float) quality.getQualityDepth().getValue(),
+                (float) quality.getQualityNS().getValue(),
+                (float) quality.getQualityEW().getValue(),
+                (int) quality.getQualityStations().getValue(),
+                (float) quality.getQualityPercentage().getValue());
+    }
+
+    private static HypocenterData createHypocenterData(Earthquake earthquake) {
+        return new HypocenterData(
+                earthquake.getUuid(), earthquake.getRevisionID(), (float) earthquake.getLat(), (float) earthquake.getLon(),
+                (float) earthquake.getDepth(), earthquake.getOrigin(), (float) earthquake.getMag());
     }
 
     private void broadcast(List<ServerClient> clients, Packet packet) {
@@ -152,7 +202,7 @@ public class DataService {
 
     private void processEarthquakeRequest(ServerClient client, EarthquakeRequestPacket earthquakeRequestPacket) throws IOException {
         for(Earthquake earthquake : GlobalQuakeServer.instance.getEarthquakeAnalysis().getEarthquakes()){
-            if(earthquake.getUuid().equals(earthquakeRequestPacket.getUuid())){
+            if(earthquake.getUuid().equals(earthquakeRequestPacket.uuid())){
                 client.sendPacket(createQuakePacket(earthquake));
                 return;
             }

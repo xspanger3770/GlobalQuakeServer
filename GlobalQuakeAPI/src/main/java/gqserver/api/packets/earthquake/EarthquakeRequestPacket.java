@@ -4,15 +4,6 @@ import gqserver.api.Packet;
 
 import java.util.UUID;
 
-public class EarthquakeRequestPacket extends Packet {
+public record EarthquakeRequestPacket(UUID uuid) implements Packet {
 
-    private final UUID uuid;
-
-    public EarthquakeRequestPacket(UUID uuid){
-        this.uuid = uuid;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
 }

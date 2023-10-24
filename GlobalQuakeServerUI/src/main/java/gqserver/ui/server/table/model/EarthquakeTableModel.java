@@ -1,7 +1,7 @@
 package gqserver.ui.server.table.model;
 
 import gqserver.core.earthquake.data.Earthquake;
-import gqserver.core.earthquake.quality.QualityClass;
+import globalquake.earthquake.quality.QualityClass;
 import gqserver.ui.server.table.Column;
 import gqserver.ui.server.table.LastUpdateRenderer;
 import gqserver.ui.server.table.TableCellRendererAdapter;

@@ -1,7 +1,7 @@
 package gqserver.api.packets.system;
 
 import gqserver.api.Packet;
-import gqserver.api.data.ServerClientConfig;
+import gqserver.api.data.system.ServerClientConfig;
 
 public class HandshakePacket extends Packet {
 
