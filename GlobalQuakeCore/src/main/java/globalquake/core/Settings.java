@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 public final class Settings {
 
-	private static final File optionsFile = new File(GlobalQuake.instance.getMainFolder(), "globalQuake.properties");
+	private static final File optionsFile = new File(GlobalQuake.mainFolder, "globalQuake.properties");
 	private static final Properties properties = new Properties();
 
 	public static Double homeLat;

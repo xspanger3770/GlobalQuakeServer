@@ -180,7 +180,7 @@ public class StationDatabaseManager {
     }
 
     private static File getStationsFolder() {
-        return new File(GlobalQuake.instance.getMainFolder(), "/stationDatabase/");
+        return new File(GlobalQuake.mainFolder, "/stationDatabase/");
     }
 
     public StationDatabase getStationDatabase() {

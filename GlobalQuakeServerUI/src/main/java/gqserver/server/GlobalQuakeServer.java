@@ -14,7 +14,7 @@ public class GlobalQuakeServer extends GlobalQuake {
     private final GlobalQuakeServerEventHandler serverEventHandler;
 
     public GlobalQuakeServer(StationDatabaseManager stationDatabaseManager) {
-        super(stationDatabaseManager, Main.getErrorHandler(), Main.MAIN_FOLDER);
+        super(stationDatabaseManager);
         instance = this;
         serverSocket = new GQServerSocket();
         this.serverEventHandler = new GlobalQuakeServerEventHandler().runHandler();

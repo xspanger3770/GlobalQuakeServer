@@ -25,15 +25,16 @@ public class GlobalQuake {
 
 	protected GlobalStationManager globalStationManager;
 
-	protected ApplicationErrorHandler errorHandler;
-	private final File mainFolder;
+	public static ApplicationErrorHandler errorHandler;
+	public static File mainFolder;
 
-	public GlobalQuake(StationDatabaseManager stationDatabaseManager,
-					   ApplicationErrorHandler errorHandler,
-					   File mainFolder) {
+	public static void prepare(File mainFolder, ApplicationErrorHandler errorHandler) {
+		GlobalQuake.mainFolder = mainFolder;
+		GlobalQuake.errorHandler = errorHandler;
+	}
+
+	public GlobalQuake(StationDatabaseManager stationDatabaseManager) {
 		instance = this;
-		this.mainFolder = mainFolder;
-		this.errorHandler = errorHandler;
 		this.stationDatabaseManager = stationDatabaseManager;
 
 		eventHandler = new GlobalQuakeEventHandler().runHandler();
@@ -96,11 +97,8 @@ public class GlobalQuake {
 		return eventHandler;
 	}
 
-	public ApplicationErrorHandler getErrorHandler() {
+	public static ApplicationErrorHandler getErrorHandler() {
 		return errorHandler;
 	}
 
-	public File getMainFolder() {
-		return mainFolder;
-	}
 }

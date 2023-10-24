@@ -14,4 +14,5 @@ public interface GlobalQuakeEventListener {
 
     void onQuakeRemove(QuakeRemoveEvent quakeRemoveEvent);
 
+    void onQuakeArchive(QuakeArchiveEvent quakeArchiveEvent);
 }

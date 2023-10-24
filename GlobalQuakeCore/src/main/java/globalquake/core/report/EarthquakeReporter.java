@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class EarthquakeReporter {
-	public static final File ANALYSIS_FOLDER = new File(GlobalQuake.instance.getMainFolder(), "/events/");
+	public static final File ANALYSIS_FOLDER = new File(GlobalQuake.mainFolder, "/events/");
 	private static final DateTimeFormatter fileFormat = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss").withZone(ZoneId.systemDefault());
 	private static double centerLat = 49.7;
 	private static double centerLon = 15.65;

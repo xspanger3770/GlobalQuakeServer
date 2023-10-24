@@ -24,4 +24,9 @@ public class GlobalQuakeEventAdapter implements GlobalQuakeEventListener{
     public void onQuakeRemove(QuakeRemoveEvent quakeRemoveEvent) {
 
     }
+
+    @Override
+    public void onQuakeArchive(QuakeArchiveEvent quakeArchiveEvent) {
+
+    }
 }

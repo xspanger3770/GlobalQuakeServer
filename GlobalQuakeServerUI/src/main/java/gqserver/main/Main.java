@@ -1,5 +1,6 @@
 package gqserver.main;
 
+import globalquake.core.GlobalQuake;
 import globalquake.core.Settings;
 import globalquake.core.database.StationDatabaseManager;
 import globalquake.core.database.StationSource;
@@ -34,14 +35,18 @@ public class Main {
 
     private static void startDatabaseManager() throws FatalIOException {
         databaseManager = new StationDatabaseManager();
-        new GlobalQuakeServer(databaseManager);
         databaseManager.load();
+
+        new GlobalQuakeServer(databaseManager);
+
         databaseMonitorFrame = new DatabaseMonitorFrame(databaseManager);
         databaseMonitorFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
         initErrorHandler();
+
+        GlobalQuake.prepare(Main.MAIN_FOLDER, Main.getErrorHandler());
 
         try {
             startDatabaseManager();
