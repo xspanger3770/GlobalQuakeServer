@@ -1,7 +1,7 @@
 package gqserver.ui.server.dialog;
 
-import gqserver.database.StationDatabaseManager;
-import gqserver.database.StationSource;
+import globalquake.core.database.StationDatabaseManager;
+import globalquake.core.database.StationSource;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

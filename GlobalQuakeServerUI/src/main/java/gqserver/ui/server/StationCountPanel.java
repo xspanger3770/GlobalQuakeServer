@@ -1,8 +1,8 @@
 package gqserver.ui.server;
 
-import gqserver.database.Channel;
-import gqserver.database.Network;
-import gqserver.database.Station;
+import globalquake.core.database.Channel;
+import globalquake.core.database.Network;
+import globalquake.core.database.Station;
 import gqserver.ui.stationselect.StationColor;
 
 import javax.swing.*;

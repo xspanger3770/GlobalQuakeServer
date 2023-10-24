@@ -1,17 +1,16 @@
 package gqserver.server;
 
+import globalquake.core.exception.InvalidPacketException;
+import globalquake.core.exception.RuntimeApplicationException;
+import globalquake.utils.monitorable.MonitorableCopyOnWriteArrayList;
 import gqserver.api.Packet;
 import gqserver.api.ServerClient;
 import gqserver.api.packets.system.HandshakePacket;
 import gqserver.api.packets.system.TerminationPacket;
-import gqserver.core.GlobalQuakeServer;
 import gqserver.events.specific.ClientJoinedEvent;
 import gqserver.events.specific.ClientLeftEvent;
 import gqserver.events.specific.ServerStatusChangedEvent;
-import gqserver.exception.InvalidPacketException;
-import gqserver.exception.RuntimeApplicationException;
 import gqserver.api.exception.UnknownPacketException;
-import gqserver.utils.monitorable.MonitorableCopyOnWriteArrayList;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -76,7 +75,7 @@ public class GQServerSocket {
                 try {
                     client.destroy();
                     toRemove.add(client);
-                    GlobalQuakeServer.instance.getEventHandler().fireEvent(new ClientLeftEvent(client));
+                    GlobalQuakeServer.instance.getServerEventHandler().fireEvent(new ClientLeftEvent(client));
                     Logger.info("Client #%d disconnected due to timeout".formatted(client.getID()));
                 } catch (Exception e) {
                     Logger.error(e);
@@ -109,7 +108,7 @@ public class GQServerSocket {
                     Logger.info("Client #%d handshake successfull".formatted(client.getID()));
                     readerService.submit(new ClientReader(client));
                     clients.add(client);
-                    GlobalQuakeServer.instance.getEventHandler().fireEvent(new ClientJoinedEvent(client));
+                    GlobalQuakeServer.instance.getServerEventHandler().fireEvent(new ClientJoinedEvent(client));
                 }
             }
         } catch (UnknownPacketException | InvalidPacketException e) {
@@ -129,7 +128,7 @@ public class GQServerSocket {
     public void setStatus(SocketStatus status) {
         this.status = status;
         if (GlobalQuakeServer.instance != null) {
-            GlobalQuakeServer.instance.getEventHandler().fireEvent(new ServerStatusChangedEvent(status));
+            GlobalQuakeServer.instance.getServerEventHandler().fireEvent(new ServerStatusChangedEvent(status));
         }
     }
 

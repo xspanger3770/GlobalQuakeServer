@@ -1,16 +1,17 @@
 package gqserver.main;
 
-import gqserver.core.GlobalQuakeServer;
-import gqserver.database.StationDatabaseManager;
-import gqserver.database.StationSource;
-import gqserver.exception.ApplicationErrorHandler;
-import gqserver.exception.FatalIOException;
-import gqserver.geo.taup.TauPTravelTimeCalculator;
-import gqserver.intensity.IntensityTable;
-import gqserver.regions.Regions;
-import gqserver.training.EarthquakeAnalysisTraining;
+import globalquake.core.Settings;
+import globalquake.core.database.StationDatabaseManager;
+import globalquake.core.database.StationSource;
+import globalquake.core.exception.ApplicationErrorHandler;
+import globalquake.core.exception.FatalIOException;
+import globalquake.core.training.EarthquakeAnalysisTraining;
+import globalquake.core.regions.Regions;
+import globalquake.core.intensity.*;
+import globalquake.core.geo.taup.TauPTravelTimeCalculator;
+
+import gqserver.server.GlobalQuakeServer;
 import gqserver.ui.server.DatabaseMonitorFrame;
-import gqserver.ui.settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,10 +22,11 @@ import java.util.stream.Collectors;
 
 public class Main {
 
+    public static final File MAIN_FOLDER = new File("./GlobalQuakeServer/");
+
     private static ApplicationErrorHandler errorHandler;
     public static final String version = "0.1.0";
     public static final String fullName = "GlobalQuakeServer " + version;
-    public static final File MAIN_FOLDER = new File("./GlobalQuakeServer/");
     private static DatabaseMonitorFrame databaseMonitorFrame;
     private static StationDatabaseManager databaseManager;
 
@@ -32,19 +34,14 @@ public class Main {
 
     private static void startDatabaseManager() throws FatalIOException {
         databaseManager = new StationDatabaseManager();
-        databaseManager.load();
         new GlobalQuakeServer(databaseManager);
+        databaseManager.load();
         databaseMonitorFrame = new DatabaseMonitorFrame(databaseManager);
         databaseMonitorFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
         initErrorHandler();
-        if (!MAIN_FOLDER.exists()) {
-            if (!MAIN_FOLDER.mkdirs()) {
-                getErrorHandler().handleException(new FatalIOException("Unable to create main directory!", null));
-            }
-        }
 
         try {
             startDatabaseManager();

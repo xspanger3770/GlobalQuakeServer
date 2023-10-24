@@ -1,7 +1,8 @@
 package gqserver.ui.server.action.source;
 
-import gqserver.database.StationDatabaseManager;
-import gqserver.database.StationSource;
+
+import globalquake.core.database.StationDatabaseManager;
+import globalquake.core.database.StationSource;
 import gqserver.ui.server.table.model.FilterableTableModel;
 
 import javax.swing.*;

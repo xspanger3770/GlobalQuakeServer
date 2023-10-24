@@ -1,9 +1,9 @@
 package gqserver.ui.server.tabs;
 
-import gqserver.core.GlobalQuakeServer;
-import gqserver.events.GlobalQuakeEventAdapter;
+import gqserver.events.GlobalQuakeServerEventListener;
 import gqserver.events.specific.ClientJoinedEvent;
 import gqserver.events.specific.ClientLeftEvent;
+import gqserver.server.GlobalQuakeServer;
 import gqserver.ui.server.table.GQTable;
 import gqserver.ui.server.table.model.ClientsTableModel;
 
@@ -23,7 +23,7 @@ public class ClientsTab extends JPanel {
 
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(model::applyFilter, 0,1, TimeUnit.SECONDS);
 
-        GlobalQuakeServer.instance.getEventHandler().registerEventListener(new GlobalQuakeEventAdapter(){
+        GlobalQuakeServer.instance.getServerEventHandler().registerEventListener(new GlobalQuakeServerEventListener(){
             @Override
             public void onClientLeave(ClientLeftEvent clientLeftEvent) {
                 model.applyFilter();

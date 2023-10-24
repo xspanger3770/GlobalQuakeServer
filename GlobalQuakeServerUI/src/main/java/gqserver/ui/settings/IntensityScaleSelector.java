@@ -1,8 +1,8 @@
 package gqserver.ui.settings;
 
-import gqserver.intensity.IntensityScale;
-import gqserver.intensity.IntensityScales;
-import gqserver.intensity.Level;
+import globalquake.core.intensity.IntensityScale;
+import globalquake.core.intensity.IntensityScales;
+import globalquake.core.intensity.Level;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

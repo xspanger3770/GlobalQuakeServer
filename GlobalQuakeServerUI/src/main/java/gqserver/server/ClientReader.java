@@ -3,7 +3,6 @@ package gqserver.server;
 import gqserver.api.Packet;
 import gqserver.api.ServerClient;
 import gqserver.api.exception.UnknownPacketException;
-import gqserver.core.GlobalQuakeServer;
 import org.tinylog.Logger;
 
 import java.io.IOException;

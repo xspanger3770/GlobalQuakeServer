@@ -1,6 +1,6 @@
 package gqserver.ui.globe.feature;
 
-import gqserver.geo.GeoUtils;
+import globalquake.utils.GeoUtils;
 import gqserver.ui.globe.GlobeRenderer;
 import gqserver.ui.globe.Point2D;
 import gqserver.ui.globe.Polygon3D;

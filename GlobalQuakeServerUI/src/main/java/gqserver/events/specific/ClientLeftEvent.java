@@ -1,12 +1,15 @@
 package gqserver.events.specific;
 
+import globalquake.core.events.specific.GlobalQuakeEvent;
 import gqserver.api.ServerClient;
-import gqserver.events.GlobalQuakeEventListener;
+import globalquake.core.events.GlobalQuakeEventListener;
+import gqserver.events.GlobalQuakeServerEvent;
+import gqserver.events.GlobalQuakeServerEventListener;
 
-public record ClientLeftEvent(ServerClient client) implements GlobalQuakeEvent {
+public record ClientLeftEvent(ServerClient client) implements GlobalQuakeServerEvent {
 
     @Override
-    public void run(GlobalQuakeEventListener eventListener) {
+    public void run(GlobalQuakeServerEventListener eventListener) {
         eventListener.onClientLeave(this);
     }
 }

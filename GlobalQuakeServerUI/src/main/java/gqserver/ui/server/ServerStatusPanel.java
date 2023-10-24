@@ -1,10 +1,11 @@
 package gqserver.ui.server;
 
-import gqserver.core.GlobalQuakeServer;
-import gqserver.events.GlobalQuakeEventAdapter;
+import globalquake.core.events.GlobalQuakeEventAdapter;
+import globalquake.core.exception.RuntimeApplicationException;
+import gqserver.events.GlobalQuakeServerEventListener;
 import gqserver.events.specific.ServerStatusChangedEvent;
-import gqserver.exception.RuntimeApplicationException;
 import gqserver.main.Main;
+import gqserver.server.GlobalQuakeServer;
 import gqserver.server.SocketStatus;
 import gqserver.ui.server.tabs.*;
 
@@ -66,7 +67,7 @@ public class ServerStatusPanel extends JPanel {
         controlPanel.add(statusLabel = new JLabel("Status: Idle"));
         controlPanel.add(controlButton = new JButton("Start Server"));
 
-        GlobalQuakeServer.instance.getEventHandler().registerEventListener(new GlobalQuakeEventAdapter(){
+        GlobalQuakeServer.instance.getServerEventHandler().registerEventListener(new GlobalQuakeServerEventListener(){
             @Override
             public void onServerStatusChanged(ServerStatusChangedEvent event) {
                 switch (event.status()){

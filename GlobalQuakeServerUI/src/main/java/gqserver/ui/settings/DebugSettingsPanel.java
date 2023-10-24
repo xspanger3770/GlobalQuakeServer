@@ -1,6 +1,7 @@
 package gqserver.ui.settings;
 
-import gqserver.core.report.EarthquakeReporter;
+import globalquake.core.Settings;
+import globalquake.core.report.EarthquakeReporter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

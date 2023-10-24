@@ -1,7 +1,7 @@
 package gqserver.ui.server;
 
-import gqserver.database.StationDatabaseManager;
-import gqserver.exception.FatalIOException;
+import globalquake.core.database.StationDatabaseManager;
+import globalquake.core.exception.FatalIOException;
 import gqserver.main.Main;
 import gqserver.ui.GQFrame;
 import gqserver.ui.server.action.RestoreDatabaseAction;

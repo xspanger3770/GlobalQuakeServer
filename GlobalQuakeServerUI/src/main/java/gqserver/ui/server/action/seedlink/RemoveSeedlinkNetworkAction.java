@@ -1,14 +1,14 @@
 package gqserver.ui.server.action.seedlink;
 
-import gqserver.database.SeedlinkNetwork;
-import gqserver.database.StationDatabaseManager;
+
+import globalquake.core.database.SeedlinkNetwork;
+import globalquake.core.database.StationDatabaseManager;
 import gqserver.ui.server.table.model.FilterableTableModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class RemoveSeedlinkNetworkAction extends AbstractAction {
@@ -53,7 +53,7 @@ public class RemoveSeedlinkNetworkAction extends AbstractAction {
 
         databaseManager.getStationDatabase().getDatabaseWriteLock().lock();
         try{
-            List<SeedlinkNetwork> toBeRemoved = new ArrayList<>();
+            java.util.List<SeedlinkNetwork> toBeRemoved = new ArrayList<>();
             for(int i:selectedRows){
                 SeedlinkNetwork seedlinkNetwork = tableModel.getEntity(table.getRowSorter().convertRowIndexToModel(i));
                 toBeRemoved.add(seedlinkNetwork);
