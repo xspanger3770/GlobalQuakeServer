@@ -4,6 +4,7 @@ import globalquake.core.GlobalQuake;
 import globalquake.core.Settings;
 import globalquake.core.earthquake.ArchivedQuake;
 import globalquake.core.earthquake.data.Earthquake;
+import globalquake.core.report.EarthquakeReporter;
 import globalquake.utils.monitorable.MonitorableCopyOnWriteArrayList;
 import org.tinylog.Logger;
 
@@ -74,14 +75,14 @@ public class EarthquakeArchive {
             archiveQuake(earthquake);
 
             saveArchive();
-           /* if(Settings.reportsEnabled) { TODO
+            if(Settings.reportsEnabled) {
                 reportQuake(earthquake);
-            }*/
+            }
 
         });
 	}
 
-	/*private void reportQuake(Earthquake earthquake) { TODO
+	private void reportQuake(Earthquake earthquake) {
 		executor.submit(() -> {
             try {
                 EarthquakeReporter.report(earthquake);
@@ -89,7 +90,7 @@ public class EarthquakeArchive {
                 Logger.error(e);
             }
         });
-	}*/
+	}
 
 	public synchronized void archiveQuake(Earthquake earthquake) {
 		if(archivedQuakes == null){
