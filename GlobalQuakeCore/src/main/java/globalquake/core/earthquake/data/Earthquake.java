@@ -76,6 +76,12 @@ public class Earthquake implements Regional, Warnable {
 		return hyp == null ? 0L : hyp.origin;
 	}
 
+	public void update(Earthquake earthquake) {
+		getCluster().setPreviousHypocenter(earthquake.getHypocenter());
+		getCluster().revisionID = earthquake.getRevisionID();
+		update();
+	}
+
 	public void update() {
 		if (getLat() != lastLat || getLon() != lastLon) {
 			regionUpdater.updateRegion();
