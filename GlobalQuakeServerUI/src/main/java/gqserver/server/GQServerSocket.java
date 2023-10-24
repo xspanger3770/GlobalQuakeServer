@@ -90,13 +90,13 @@ public class GQServerSocket {
         try {
             Packet packet = client.readPacket();
             if (packet instanceof HandshakePacket handshakePacket) {
-                if (handshakePacket.getCompatVersion() != COMPATIBILITY_VERSION) {
+                if (handshakePacket.compatVersion() != COMPATIBILITY_VERSION) {
                     client.sendPacket(new TerminationPacket("Your client version is not compatible with the server!"));
                     throw new InvalidPacketException("Client's version is not compatible %d != %d"
-                            .formatted(handshakePacket.getCompatVersion(), COMPATIBILITY_VERSION));
+                            .formatted(handshakePacket.compatVersion(), COMPATIBILITY_VERSION));
                 }
 
-                client.setClientConfig(handshakePacket.getClientConfig());
+                client.setClientConfig(handshakePacket.clientConfig());
             } else {
                 throw new InvalidPacketException("Received packet is not handshake!");
             }

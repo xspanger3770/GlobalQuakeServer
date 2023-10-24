@@ -5,7 +5,7 @@ import gqserver.api.ServerClient;
 
 import java.io.IOException;
 
-public class HeartbeatPacket extends Packet {
+public record HeartbeatPacket() implements Packet {
 
     @Override
     public void onServerReceive(ServerClient serverClient) throws IOException {
