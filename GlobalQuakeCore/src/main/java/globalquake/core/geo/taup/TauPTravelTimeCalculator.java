@@ -10,7 +10,7 @@ import java.util.function.Function;
 @SuppressWarnings("unused")
 public class TauPTravelTimeCalculator {
 
-    public static final double ANG_RESOLUTION = 1.0;
+    public static final double ANG_RESOLUTION = 1.0; // TODO RESOLUTION!
     public static final double DEPTH_RESOLUTION = 1.0;
 
     public static final double MAX_DEPTH = 750.0;
