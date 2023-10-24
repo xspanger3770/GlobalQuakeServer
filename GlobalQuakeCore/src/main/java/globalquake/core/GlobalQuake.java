@@ -33,8 +33,12 @@ public class GlobalQuake {
 		GlobalQuake.errorHandler = errorHandler;
 	}
 
-	public GlobalQuake(StationDatabaseManager stationDatabaseManager) {
+	public GlobalQuake() {
 		instance = this;
+	}
+
+	public GlobalQuake(StationDatabaseManager stationDatabaseManager) {
+		this();
 		this.stationDatabaseManager = stationDatabaseManager;
 
 		eventHandler = new GlobalQuakeEventHandler().runHandler();
